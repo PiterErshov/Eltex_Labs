@@ -7,9 +7,9 @@
 char** readf(FILE *fr, int *s) //чтение из файла массива строк
 {
 	int i = 0;
-	char b[1024];
+	char b[N];
 	char **ch;
-	ch = (char **)malloc(sizeof(char *)*1024);
+	ch = (char **)malloc(sizeof(char *)*N);
 	while(!feof(fr))
 	{
 		fgets(b, 100, fr);
@@ -21,18 +21,27 @@ char** readf(FILE *fr, int *s) //чтение из файла массива с�
 	return ch;
 }
 
-void search(char **mas, int *c, char *b)//поиск слова
+char** Del_end(char **mas, int s)
+{
+	for(int i = 0; i < s; i++)
+	{
+		mas[i] = strtok(mas[i], "\n");
+	}	
+	return mas;
+}
+
+void search(char **mas, int c, char *b)//поиск слова
 {
 	int f = 0, y = 0;
-	for(int i = 0; i < *c; i++)
+	for(int i = 0; i < c-1; i++)
 	{
-		y = strcmp(mas[i], b[0]);
+		y = strcmp(mas[i], b);
 		if(y == 0)
 		{
 			f++;
 		}
 	}
-	printf("Слово %s найдено %d раз", b[0], f);
+	printf("Слово %s найдено %d раз \n", b, f);
 }
 
 void printMas(char **mas, int *count) //вывод массива
@@ -48,7 +57,7 @@ void printMas(char **mas, int *count) //вывод массива
 
 void freeMas(char **mas) //очистка массива
 {
-	for (int i = 0; i < 1024; i++)
+	for (int i = 0; i < N; i++)
 	{
       		free(mas[i]);
    	}
