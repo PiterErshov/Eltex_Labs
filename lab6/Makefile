@@ -1,5 +1,5 @@
 #--- Makefile
-lab6 : lab6.o
+lab6 : lab6.o f.o
 	gcc lab6.o f.o -o lab6
 f.o : f.c
 	gcc -g -c f.c

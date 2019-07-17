@@ -111,7 +111,6 @@ void freeMas(char **mas) //очистка массива
 
 void outf(FILE *fu, char **ch, int buf, int *s) //вывод обработанного массива в файл
 {
-
 	char b[1024];
 	for(int i = 0; i < *s; i++)
 	{
