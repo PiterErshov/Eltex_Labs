@@ -54,7 +54,7 @@ void fork_search(char **ch, int s, char *b)//поиск слова
 		pid = fork();
 		if (-1 == pid) 
 		{
-			perror("fork"); /* произошла ошибка */
+			perror("fork");
 			exit(1); 
 		}
 		
@@ -111,6 +111,7 @@ void freeMas(char **mas) //очистка массива
 
 void outf(FILE *fu, char **ch, int buf, int *s) //вывод обработанного массива в файл
 {
+
 	char b[1024];
 	for(int i = 0; i < *s; i++)
 	{
