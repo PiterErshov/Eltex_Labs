@@ -13,6 +13,7 @@ int main(int argc, char *argv[])
 
 	FILE *fr;
 	char s1[N];
+	char buf[N];
 	char **ch = NULL;
 	int s = 0;
 	char **ch1 = NULL;
@@ -22,7 +23,8 @@ int main(int argc, char *argv[])
 		exit(1);
 	}
 
-	strcpy(s1, argv[2]);
+	strcpy(buf, argv[2]);
+	strcpy(s1, argv[3]);
 	
 	ch = readf(fr, &s);		
   	fclose(fr);
@@ -32,9 +34,9 @@ int main(int argc, char *argv[])
 	
 	int f = 0, y = 0;
 	
-	fork_search(ch, s, s1);
+	fork_search(buf, ch, s, s1);
 		
-	if((fr=fopen("buf.txt","a+"))==NULL)
+	if((fr=fopen(buf,"a+"))==NULL)
 	{
 		printf("Невозможно открыть файл для чтения.\n");
 		exit(1);

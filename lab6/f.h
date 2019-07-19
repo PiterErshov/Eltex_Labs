@@ -10,7 +10,7 @@ char** Del_end(char **mas, int s);//удаление символа новой �
 
 void search(char **mas, int c, char *b);//поиск слова
 
-void fork_search(char **ch, int s, char *b); //поиск слова
+void fork_search(char *name, char **ch, int s, char *b); //поиск слова
 
 void printMas(char **mas, int *count); //вывод массива
 

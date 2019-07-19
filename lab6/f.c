@@ -40,12 +40,12 @@ void search(char **mas, int c, char *b)//поиск слова
 	printf("Слово %s найдено %d раз \n", b, f);
 }
 
-void fork_search(char **ch, int s, char *b)//поиск слова
+void fork_search(char *name, char **ch, int s, char *b)//поиск слова
 {
 	int f = 0, y = 0;
 	FILE *fr;
 	
-	fr = fopen("buf.txt","w");
+	fr = fopen(name, "w");
 	fclose(fr);
 	
 	for(int i= 0; i < s; i++)
@@ -60,7 +60,7 @@ void fork_search(char **ch, int s, char *b)//поиск слова
 		
 		if (0 == pid)
 		{
-			if((fr=fopen("buf.txt","a+"))==NULL)
+			if((fr=fopen(name, "a+"))==NULL)
 			{
 				printf("Невозможно открыть файл для чтения.\n");
 				exit(1);
@@ -73,11 +73,8 @@ void fork_search(char **ch, int s, char *b)//поиск слова
 			{		
 				char b[N]="";
 				fgets(b, N, fr);		
-				
-				fr = fopen("buf.txt","w");
-				fclose(fr);
-				
-				fr = fopen("buf.txt","a+");				
+								
+				fr = fopen(name, "w");				
 				f = atoi(b); 
 				f+=1;
 				sprintf(b, "%d", f);				
@@ -86,32 +83,29 @@ void fork_search(char **ch, int s, char *b)//поиск слова
 			}		
 			exit(0);			
 		}	
-		sleep(1);//ставим задержку, чтобы процесс успел завершиться
+		wait(pid);//ждём завершения процесса
 	}
 }
 
 void printMas(char **mas, int *count) //вывод массива
 {
-    	for (int i = 0; i < *count ; i++)
+    for (int i = 0; i < *count ; i++)
    	{
 		printf("\n");
-       		printf("%s", mas[i]);
-       		printf("\n");
-    	}
+		printf("%s", mas[i]);
+     	printf("\n");
+    }
 }
 
 void freeMas(char **mas) //очистка массива
 {
 	for (int i = 0; i < N; i++)
-	{
-      		free(mas[i]);
-   	}
+	   	free(mas[i]);
 	free(mas);
 }
 
 void outf(FILE *fu, char **ch, int buf, int *s) //вывод обработанного массива в файл
 {
-
 	char b[1024];
 	for(int i = 0; i < *s; i++)
 	{
