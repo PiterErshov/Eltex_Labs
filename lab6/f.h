@@ -1,8 +1,11 @@
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 #include <stdio.h>
+#include <errno.h>
 #include <stdlib.h>
 #include <string.h>
 #define N 1024
-
 
 char** readf(FILE *fr, int *s); //чтение из файла массива строк
 
@@ -17,5 +20,3 @@ void printMas(char **mas, int *count); //вывод массива
 void freeMas(char **mas); //очистка массива
 
 void outf(FILE *fu, char **ch, int buf, int *s); //вывод обработанного массива в файл
-
-
