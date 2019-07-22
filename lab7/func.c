@@ -33,6 +33,7 @@ char **read_mas(FILE * fr, int *s)	//чтение из файла массива
 	}
 	*s = i - 1;
 	return ch;
+	freeMas(ch);
 }
 
 char *read_vec(FILE * fr)	//чтение из файла строки

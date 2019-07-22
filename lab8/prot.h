@@ -9,7 +9,11 @@
 
 #define N 1024
 
-
+struct msgbuf
+{
+	long mtype;
+	int mSum[N];
+} buf;
 
 char * readf(FILE *fr, int *s); //получение массива символов из файла
 
@@ -17,8 +21,6 @@ int calcSumm(char **ch, int i, int s); //вычисление контрольн
 
 void printMas(char *mas, int *count); //вывод массива (вдруг нужно)
 
-void freeMas(char **mas); //очистка двумерного массива массива
+void process_file(FILE **a, char **ch, int msqid, int argc); //обработка файлов
 
 void freeMassm(char *mas); //очистка массива символов
-
-void outf(FILE *fu, char *ch, char *b, int *s); //запись обработанного массива символов в файл
