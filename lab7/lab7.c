@@ -1,10 +1,9 @@
 #include "f.h"
-#define N 1024
 
 int main(int argc, char *argv[])
 {
 	FILE *fr;
-	char sd[1024];
+	char sd[N];
 	int **mat = NULL;
 	char **mas = NULL;
 	char *v = NULL;
@@ -20,8 +19,7 @@ int main(int argc, char *argv[])
 		exit(1);
 	}
 		
-	mas = read_mas(fr, &s);
-	
+	mas = read_mas(fr, &s);	
 	fclose(fr);
 	
 	if((fr=fopen(argv[2],"a+"))==NULL)
@@ -30,19 +28,13 @@ int main(int argc, char *argv[])
 		exit(1);
 	}
 		
-	v = read_vec(fr);
-	
+	v = read_vec(fr);	
 	fclose(fr);
 	
-	vec = ToVec(v, &n);
-	
-	for(int i =0; i < n; i++)
-	{
-		printf("VEC = %d\n", vec[i]);
-	}
-								
-	mat = ToInt(mas, s, &p);
-	
+	vec = ToVec(v, &n);	
+	out_vec(vec, n);
+									
+	mat = ToInt(mas, s, &p);	
 	print_mat(mat, s, p);
 	
 	if(p == n)
@@ -54,9 +46,9 @@ int main(int argc, char *argv[])
 		printf("Нельзя перемножить вектор и матрицу. Число столбцов должно быть равно числу элементов вектора");
 	
 	freeMas(mas);
-	freeVec(v);
 	freeMasI(mat, s);
-	freeVecI(vec);
+	free(v);
+	free(vec);
 	
 	return 0;
 }

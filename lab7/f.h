@@ -8,8 +8,6 @@
 
 #define N 1024
 
-int** cremat(int m, int n); //чтение из файла массива строк
-
 char** read_mas(FILE *fr, int *s);//чтение из массива строк
 
 char* read_vec(FILE *fr); //чтение из файла строки
@@ -24,13 +22,7 @@ void printMas(char **mas, int *count); //вывод массива;
 
 void freeMas(char **mas); //очистка массива
 
-void freeVec(char *vec); //очистка массива
-
 void freeMasI(int **mas, int n) ; //очистка массива
-
-void freeVecI(int *vec); //очистка массива
-
-void outf(FILE *fu, char **ch, int buf, int *s); //вывод обработанного массива в файл
 
 void out_vec(int *vec, int n); //вывод вектора
 

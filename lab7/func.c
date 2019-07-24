@@ -1,23 +1,5 @@
 #include "f.h"
 
-int **cremat(int m, int n)	//чтение из файла массива строк
-{
-	int i = 0, j = 0;
-	int **ma;
-	ma = (int **) malloc(sizeof (int *) * m);
-
-	for (i = 0; i < m; i++)
-	{
-		ma[i] = (int *) malloc(sizeof (int) * n);
-		for (j = 0; j < n; j++)
-		{
-			printf("Enter Array [%d,%d]: ", i, j);
-			scanf("%d", &ma[i][j]);
-		}
-	}
-	return ma;
-}
-
 char **read_mas(FILE * fr, int *s)	//чтение из файла массива строк
 {
 	int i = 0;
@@ -26,7 +8,7 @@ char **read_mas(FILE * fr, int *s)	//чтение из файла массива
 	ch = (char **) malloc(sizeof (char *) * N);
 	while (!feof(fr))
 	{
-		fgets(b, 100, fr);
+		fgets(b, N, fr);
 		ch[i] = (char *) malloc(sizeof (char) * N);
 		strcpy(ch[i], b);
 		i++;
@@ -39,7 +21,7 @@ char *read_vec(FILE * fr)	//чтение из файла строки
 {
 	char *ch;
 	ch = (char *) malloc(sizeof (char) * N);
-	fgets(ch, 100, fr);
+	fgets(ch, N, fr);
 	return ch;
 }
 
@@ -197,31 +179,9 @@ void freeMas(char **mas)//очистка массива
 	free(mas);
 }
 
-void freeVec(char *vec)	//очистка массива
-{
-	free(vec);
-}
-
 void freeMasI(int **mas, int n) //очистка матрицы
 {
 	for (int i = 0; i < n; i++)
 		free(mas[i]);
 	free(mas);
-}
-
-void freeVecI(int *vec)	//очистка вектора
-{
-	free(vec);
-}
-
-void outf(FILE * fu, char **ch, int buf, int *s)	//вывод обработанного массива в файл
-{
-	char b[1024];
-	for (int i = 0; i < *s; i++)
-		if (strlen(ch[i]) <= (buf + 1))
-		{
-			strcpy(b, ch[i]);
-			printf("%s", ch[i]);
-			fputs(b, fu);
-		}
 }
