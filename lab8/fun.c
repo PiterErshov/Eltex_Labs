@@ -15,7 +15,7 @@ char * readf(FILE *fr, int *s) //получение массива символ�
 	}
 	*s = i - 1;
 	return ch;
-	freeMassm(ch);
+	free(ch);
 }
 
 int calcSumm(char **ch, int i, int s)//вычисление суммы для одного файла
@@ -46,6 +46,7 @@ void process_file(FILE **a, char **ch, int msqid, int argc)//обработка 
 			ch[i] = readf(a[i + 1], &s);
 			buf.mtype = 1;
 			buf.mSum[i] = calcSumm(ch, i, s);
+			free(ch[i]);
 			msgsnd(msqid, &buf, sizeof (buf.mSum), 0);
 			exit(0);
 		}
@@ -61,9 +62,4 @@ void printMas(char *mas, int *count) //вывод массива
 		printf("%c", mas[i]);
 		printf("\n");
 	}
-}
-
-void freeMassm(char *mas) //очистка массива
-{
-	free(mas);
 }
