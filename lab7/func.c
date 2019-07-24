@@ -24,6 +24,7 @@ char *read_vec(FILE * fr)	//чтение из файла строки
 	ch = (char *) malloc(sizeof (char) * N);
 	fgets(ch, N, fr);
 	return ch;
+	free(ch);
 }
 
 int* ToVec(char *mas, int *p)	// из строки в числовой вектор
@@ -109,6 +110,7 @@ int** ToInt(char **mas, int s, int *p)	// из строкового массив
 		}
 	}
 	return m;
+	freeMasI(m, n);
 }
 
 int* mult_M_V(int **mat, int *vec, int n, int m)
@@ -145,6 +147,7 @@ int* mult_M_V(int **mat, int *vec, int n, int m)
 		read(K[0], &res[i], sizeof(int));
 	}
 	return res;
+	free(res);
 }
 
 void out_vec(int *vec, int n)
