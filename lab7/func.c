@@ -9,11 +9,14 @@ char **read_mas(FILE * fr, int *s)	//чтение из файла массива
 	while (!feof(fr))
 	{
 		fgets(b, N, fr);
-		ch[i] = (char *) malloc(sizeof (char) * N);
-		strcpy(ch[i], b);
-		i++;
+		if (strlen(b) > 1 )
+		{
+			ch[i] = (char *) malloc(sizeof (char) * N);
+			strcpy(ch[i], b);
+			i++;
+		}
 	}
-	*s = i - 1;
+	*s = i;
 	return ch;
 	freeMas(ch);
 }
@@ -27,12 +30,12 @@ char *read_vec(FILE * fr)	//чтение из файла строки
 	free(ch);
 }
 
-int* ToVec(char *mas, int *p)	// из строки в числовой вектор
+int *ToVec(char *mas, int *p)	// из строки в числовой вектор
 {
 	int *m;
-	int n = 0, k = 0, t = 0;	
+	int n = 0, k = 0, t = 0;
 	char buf[N] = "";
-	
+
 	while (k < strlen(mas) - 1)
 	{
 		if (mas[k] == ' ')
@@ -41,18 +44,18 @@ int* ToVec(char *mas, int *p)	// из строки в числовой вект�
 		}
 		k++;
 	}
-	
-	n++;	
+
+	n++;
 	*p = n;
-	m = (int *) malloc(sizeof (int) * n);	
-	
+	m = (int *) malloc(sizeof (int) * n);
+
 	n = 0;
 	k = 0;
 	while (k < strlen(mas))
 	{
 		if (mas[k] == ' ' || k == strlen(mas) - 1)
 		{
-			m[n] = atoi(buf);			
+			m[n] = atoi(buf);
 			t = 0;
 			memset(buf, 0, N);
 			n++;
@@ -67,7 +70,7 @@ int* ToVec(char *mas, int *p)	// из строки в числовой вект�
 	return m;
 }
 
-int** ToInt(char **mas, int s, int *p)	// из строкового массива в числовую матрицу
+int **ToInt(char **mas, int s, int *p)	// из строкового массива в числовую матрицу
 {
 	int **m;
 	int n = 0;
@@ -76,9 +79,9 @@ int** ToInt(char **mas, int s, int *p)	// из строкового массив
 	for (int i = 0; i < s; i++)
 	{
 		n = 0;
-		int k = 0, t = 0;		
+		int k = 0, t = 0;
 		char buf[N] = "";
-		
+
 		while (k < strlen(mas[i]) - 1)
 		{
 			if (mas[i][k] == ' ')
@@ -113,38 +116,38 @@ int** ToInt(char **mas, int s, int *p)	// из строкового массив
 	freeMasI(m, n);
 }
 
-int* mult_M_V(int **mat, int *vec, int n, int m)
+int *mult_M_V(int **mat, int *vec, int n, int m)
 {
 	int *res;
 	int K[2];
-	
-	res = (int *) calloc(m, sizeof (int));
-	
-	for(int i = 0; i < n; i++)
-	{		
+
+	res = (int *) calloc(n, sizeof (int));
+
+	for (int i = 0; i < n; i++)
+	{
 		pipe(K);
 		pid_t pid;
-		
+
 		pid = fork();
-		if (-1 == pid) 
+		if (-1 == pid)
 		{
 			perror("fork");
-			exit(1); 
+			exit(1);
 		}
-		
+
 		if (0 == pid)
 		{
 			int buf = 0;
-			for(int j = 0; j < m; j++)
+			for (int j = 0; j < m; j++)
 				buf += mat[i][j] * vec[j];
 			close(K[0]);
-			write(K[1], &buf, sizeof(int));
+			write(K[1], &buf, sizeof (int));
 			exit(0);
-		}		
+		}
 		wait(pid);
-		
+
 		close(K[1]);
-		read(K[0], &res[i], sizeof(int));
+		read(K[0], &res[i], sizeof (int));
 	}
 	return res;
 	free(res);
@@ -152,7 +155,7 @@ int* mult_M_V(int **mat, int *vec, int n, int m)
 
 void out_vec(int *vec, int n)
 {
-	for(int i = 0; i < n; i++)
+	for (int i = 0; i < n; i++)
 		printf("RES[%d] = %d\n", i, vec[i]);
 }
 
@@ -176,14 +179,14 @@ void print_mat(int **mas, int n, int m)	//вывод матрицы
 	}
 }
 
-void freeMas(char **mas)//очистка массива
+void freeMas(char **mas)	//очистка массива
 {
 	for (int i = 0; i < 1024; i++)
 		free(mas[i]);
 	free(mas);
 }
 
-void freeMasI(int **mas, int n) //очистка матрицы
+void freeMasI(int **mas, int n)	//очистка матрицы
 {
 	for (int i = 0; i < n; i++)
 		free(mas[i]);

@@ -36,11 +36,11 @@ int main(int argc, char *argv[])
 									
 	mat = ToInt(mas, s, &p);	
 	print_mat(mat, s, p);
-	
+	printf("s = %d\n", s);
 	if(p == n)
 	{	
 		res_v = mult_M_V(mat, vec, s, p);
-		out_vec(res_v, p);
+		out_vec(res_v, s);
 	}
 	else
 		printf("Нельзя перемножить вектор и матрицу. Число столбцов должно быть равно числу элементов вектора");
