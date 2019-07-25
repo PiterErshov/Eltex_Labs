@@ -9,7 +9,7 @@ char **read_mas(FILE * fr, int *s)	//чтение из файла массива
 	while (!feof(fr))
 	{
 		fgets(b, N, fr);
-		if (strlen(b) > 1 )
+		if (b[0] != '\n' )
 		{
 			ch[i] = (char *) malloc(sizeof (char) * N);
 			strcpy(ch[i], b);
