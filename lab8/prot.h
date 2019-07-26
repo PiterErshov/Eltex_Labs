@@ -21,6 +21,6 @@ int calcSumm(char **ch, int i, int s); //вычисление контрольн
 
 void printMas(char *mas, int *count); //вывод массива (вдруг нужно)
 
-void process_file(FILE **a, char **ch, int msqid, int argc); //обработка файлов
+void process_file(char **ch, int msqid, int argc, char *argv[]); //обработка файлов
 
 void freeMassm(char *mas); //очистка массива символов
