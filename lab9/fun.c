@@ -1,75 +1,76 @@
 #include "prot.h"
 
-char *readf(FILE * fr, int *s)	//получение массива символов из файла
+void bees(int bee_p, int shmid, int i)
 {
-	int i = 0;
-	char b;
-	char *ch;
-	ch = malloc(sizeof (char) * N);
+	int *s, *shm;
 
-	while (!feof(fr))
+	while (1)
 	{
-		b = fgetc(fr);
-		ch[i] = b;
-		i++;
-	}
-	*s = i - 1;
-	return ch;
-	free(ch);
-}
-
-int calcSumm(char **ch, int i, int s)	//вычисление суммы для одного файла
-{
-	int sum = 0;
-	for (int j = 0; j < s; j++)
-		sum += ch[i][j];
-	return sum;
-}
-
-void process_file(char **ch, int msqid, int argc, char *argv[])	//обработка всех файлов
-{
-	int s = 0;
-	pid_t pid;
-	FILE *fr;
-	struct msgbuf test;
-	for (int i = 0; i < argc - 1; i++)
-	{
-		pid = fork();
-
-		if (-1 == pid)
+		if ((shm = shmat(shmid, NULL, 0)) == (int *) -1)
 		{
-			perror("fork");
+			perror("shmat");
 			exit(1);
 		}
-		else if (0 == pid)
-		{
-			if ((fr = fopen(argv[i + 1], "r")) == NULL)
-			{
-				printf("Невозможно открыть файл для чтения.\n");
-				exit(1);
-			}
-			else
-				printf("file's name: %s\n", argv[i + 1]);
 
-			ch[i] = malloc(sizeof (char) * N);
-			ch[i] = readf(fr, &s);
-			fclose(fr);
-			buf.mtype = 1;
-			buf.mSum[i] = calcSumm(ch, i, s);
-			free(ch[i]);
-			msgsnd(msqid, &buf, sizeof (buf.mSum), 0);
-			exit(0);
+		s = shm;
+		if (s[1] == 0)
+		{
+			printf("Мишка умёр и пчёла номер %d тоже\n", i + 1);
+			break;
 		}
-		wait(pid);
+		else
+		{
+			srand(time(NULL));
+			srand(rand());
+			int r_h = minr + rand() % maxr;
+			s[0] += bee_p;
+			printf("Пчёла %d принесла мёд, теперь мёда %d единиц\n", i + 1, s[0]);
+			sleep(r_h);
+		}
+		if (shmdt(shm) < 0)
+		{
+			printf("Ошибка отключения\n");
+			exit(1);
+		}
 	}
+	exit(0);
 }
 
-void printMas(char *mas, int *count)	//вывод массива
+void bear(int h_p, int lt, int shmid)
 {
-	for (int i = 0; i < *count; i++)
+	int *s, *shm, flag = 0;
+	if ((shm = shmat(shmid, NULL, 0)) == (int *) -1)
 	{
-		printf("\n");
-		printf("%c", mas[i]);
-		printf("\n");
+		perror("shmat");
+		exit(1);
 	}
+
+	s = shm;
+	while (1)
+	{
+		if (s[0] <= 0)
+		{
+			flag = 1;
+			printf("Мишка скоро умрёт\n");
+			sleep(lt);
+		}
+		else
+		{
+			printf("Мёда было %d единиц\n",
+			       s[0]);
+			s[0] -= h_p;
+			printf("Мишка жрёт\n");
+			printf("Мёда стало %d единиц\n", s[0]);
+			flag = 0;
+			sleep(lt);
+			printf("Мишка ждёт\n");
+		}
+		if (s[0] <= 0 && flag == 1)
+		{
+			s[1] = 0;
+			printf("Мишка умер\n");
+			break;
+		}
+	}
+	exit(0);
 }

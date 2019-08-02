@@ -1,13 +1,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include <sys/msg.h>
 #include <sys/types.h>
 #include <sys/ipc.h>
+#include <sys/shm.h>
 #include <sys/errno.h>
+#include <sys/wait.h>
 #include <unistd.h>
 
 #define N 1024
+#define minr 1
+#define maxr 10
 
 struct msgbuf
 {
@@ -15,12 +20,6 @@ struct msgbuf
 	int mSum[N];
 } buf;
 
-char * readf(FILE *fr, int *s); //получение массива символов из файла
+void bees(int bee_p, int shmid, int i);
 
-int calcSumm(char **ch, int i, int s); //вычисление контрольной суммы (сумма кодов всех ситмволов в файле)
-
-void printMas(char *mas, int *count); //вывод массива (вдруг нужно)
-
-void process_file(char **ch, int msqid, int argc, char *argv[]); //обработка файлов
-
-void freeMassm(char *mas); //очистка массива символов
+void bear(int h_p, int lt, int shmid);

@@ -1,23 +1,63 @@
-#include <stdio.h>
-#include <stdlib.h>
 #include "prot.h"
 
 int main(int argc, char *argv[])
 {
-	struct msgbuf test;
-	char **ch;	
-	int msqid = 0, b = 0;
-				
-	msqid = msgget(0, 0600 |IPC_CREAT|IPC_EXCL);	
-	ch = malloc(sizeof (char *) * (argc - 1));
+	int *shm, *s, shmid, count = 10;
 
-	process_file(ch, msqid, argc, argv);
-	
-	for (int i = 0; i < argc - 1; i++)
+	if (argc < 5)
 	{
-		msgrcv(msqid, &test, sizeof (struct msgbuf) - sizeof (long), buf.mtype, IPC_NOWAIT);
-		printf("Controll summ in file %s = %d \n", argv[i + 1], test.mSum[i]);
+		fprintf(stderr,
+			"Не верное число параметров\n");
+		fprintf(stderr,
+			"Используйте формат %s n_bees bee_portion honey_portion lifetime\n",
+			argv[0]);
+		exit(1);
 	}
-	free(ch);
+	int k = 0;
+	int n_bees = atoi(argv[1]),
+		bee_p = atoi(argv[2]),
+		int_size = atoi(argv[3]), lt = atoi(argv[4]);
+	pid_t pid[n_bees + 1];
+
+	if ((shmid = shmget(IPC_PRIVATE, sizeof (int), IPC_CREAT | 0666)) < 0)
+	{
+		perror("shmget");
+		exit(1);
+	}
+	if ((shm = shmat(shmid, NULL, 0)) == (int *) -1)
+	{
+		perror("shmat");
+		exit(1);
+	}
+
+	s = shm;
+	s[1] = 1;
+	for (int i = 0; i < n_bees; i++)
+	{
+		pid[i] = fork();
+		if (-1 == pid[i])
+		{
+			perror("fork");	/* произошла ошибка */
+			exit(1);	/*выход из родительского процесса */
+		}
+		else if (0 == pid[i])
+		{
+			if (i < n_bees - 1)
+				bees(bee_p, shmid, i);
+			else
+				bear(int_size, lt, shmid);
+			wait(pid[i]);
+		}
+	}
+	if (shmdt(shm) < 0)
+	{
+		printf("Ошибка отключения\n");
+		exit(1);
+	}
+	if (shmctl(shmid, IPC_RMID, 0) < 0)
+	{
+		printf("Невозможно удалить область\n");
+		exit(1);
+	}
 	return 0;
 }
