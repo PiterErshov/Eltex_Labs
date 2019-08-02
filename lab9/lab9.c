@@ -14,7 +14,7 @@ int main(int argc, char *argv[])
 		exit(1);
 	}
 	int k = 0;
-	int n_bees = atoi(argv[1]),
+	int n_bees = atoi(argv[1]) + 1,
 		bee_p = atoi(argv[2]),
 		int_size = atoi(argv[3]), lt = atoi(argv[4]);
 	pid_t pid[n_bees + 1];
@@ -46,8 +46,12 @@ int main(int argc, char *argv[])
 				bees(bee_p, shmid, i);
 			else
 				bear(int_size, lt, shmid);
-			wait(pid[i]);
 		}
+	}
+	for (int i = 0; i < n_bees; i++)
+	{
+		int stat;
+		waitpid(pid[i], &stat, 0);
 	}
 	if (shmdt(shm) < 0)
 	{
