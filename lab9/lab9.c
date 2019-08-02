@@ -49,10 +49,8 @@ int main(int argc, char *argv[])
 		}
 	}
 	for (int i = 0; i < n_bees; i++)
-	{
-		int stat;
-		waitpid(pid[i], &stat, 0);
-	}
+		wait(pid[i]);
+						
 	if (shmdt(shm) < 0)
 	{
 		printf("Ошибка отключения\n");
