@@ -9,17 +9,17 @@ int main(int argc, char *argv[])
 	pthread_cond_t cv[atoi(argv[1])];
 	int ret;
 	pthread_mutex_t mutex;
-
+	char b[N] = "";
 	for (int i = 0; i < atoi(argv[1]); i++)
 	{
-		char b = "ii";
-		strcpy(data[i], "123");
+		strcat(b, "1");
+		strcpy(data[i], b);		
 	}
 
 	for (int i = 0; i < atoi(argv[1]); i++)
 	{
 		result = pthread_create(&threads[i], NULL, fighter, &data[i]);
-		pthread_cond_wait(&cv[i], &mutex);
+		//pthread_cond_wait(&cv[i], &mutex);
 		if (result != 0)
 		{
 			perror("Creating the first thread");
