@@ -8,8 +8,12 @@
 
 struct put
 {
-	pthread_mutex_t mutex;	
+	pthread_mutex_t mutex[N];	
+	pthread_t threads[N];
+	int kill[N];	
+	int max;
 	char data[N][N];
+	int w;
 } put;
 
 void *fighter(void *arg);
