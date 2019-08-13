@@ -1,12 +1,14 @@
 #include "prot.h"
 
+
+
 int main(int argc, char *argv[])
 {
 	int result;
 	pthread_t threads[N];
 	char data[N][N];
 	void *status[atoi(argv[1])];
-	pthread_cond_t cv[atoi(argv[1])];
+	//pthread_cond_t cv[atoi(argv[1])];
 	int ret;
 	pthread_mutex_t mutex;
 	char b[N] = "";
@@ -19,18 +21,16 @@ int main(int argc, char *argv[])
 	for (int i = 0; i < atoi(argv[1]); i++)
 	{
 		result = pthread_create(&threads[i], NULL, fighter, &data[i]);
-		//pthread_cond_wait(&cv[i], &mutex);
+		pthread_mutex_lock(&mutex);
 		if (result != 0)
 		{
 			perror("Creating the first thread");
 			return EXIT_FAILURE;
 		}
-
-		//pthread_mutex_unlock(&mutex);
 	}
 
 	for (int i = 0; i < atoi(argv[1]); i++)
-		pthread_cond_signal(&cv[i]);
+		pthread_mutex_unlock(&mutex	);
 //*
 	for (int i = 0; i < atoi(argv[1]); i++)
 	{
@@ -39,10 +39,6 @@ int main(int argc, char *argv[])
 		{
 			perror("Joining the first thread");
 			return EXIT_FAILURE;
-		}
-		else
-		{
-		//	printf("square[%d]=%f\n", i, status[i]);
 		}
 		free(status[i]);
 	}
