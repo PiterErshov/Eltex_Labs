@@ -6,4 +6,10 @@
 
 #define N 1024
 
+struct put
+{
+	pthread_mutex_t mutex;	
+	char data[N][N];
+} put;
+
 void *fighter(void *arg);
