@@ -16,4 +16,6 @@ struct put
 	int w;
 } put;
 
-void *fighter(void *arg);
+void *fighter(void *arg);//функция-боец: убивате случайный поток, если id потока не равен её собсвтенному
+
+int live(int pt);//проверяет мёртв поток или нет
