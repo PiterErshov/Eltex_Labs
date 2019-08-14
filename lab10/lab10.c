@@ -12,7 +12,7 @@ int main(int argc, char *argv[])
 	for (int i = 0; i < atoi(argv[1]); i++)
 	{
 		pthread_mutex_init(&put.mutex[i], NULL);
-		result = pthread_create(&put.threads[i], NULL, fighter, i);
+		result = pthread_create(&put.threads[i], NULL, fighter, &i);
 		if (result != 0)
 		{
 			perror("Creating the first thread");
