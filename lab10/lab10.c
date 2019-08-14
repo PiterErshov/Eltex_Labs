@@ -7,10 +7,12 @@ int main(int argc, char *argv[])
 	void *status[atoi(argv[1])];
 	int ret;
 	put.max = atoi(argv[1]);
+	flag = 1;
 	for (int i = 0; i < atoi(argv[1]); i++)
-	{
-		pthread_mutex_init(&put.mutex[i], NULL);
-		result = pthread_create(&put.threads[i], NULL, fighter, &i);
+	{		
+		int *f = malloc(sizeof (int));
+		*f = i;
+		result = pthread_create(&put.threads[i], NULL, fighter, f);
 		if (result != 0)
 		{
 			perror("Creating the first thread");
@@ -18,9 +20,10 @@ int main(int argc, char *argv[])
 		}
 		put.kill[i] = 0;
 	}
-	
+	//sleep(2);
+	flag = 0;
 	pthread_cond_broadcast(&cond);
-	/*
+	//*
 	for (int i = 0; i < put.max; i++)
 	{
 		if (put.kill[i] != 1)
@@ -31,7 +34,7 @@ int main(int argc, char *argv[])
 		}
 	}
 	//*/
-	//printf("Победитель = %d\n", put.w);
+	printf("Победитель = %d\n", put.w);
 
 	return 0;
 }

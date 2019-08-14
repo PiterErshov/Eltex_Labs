@@ -7,7 +7,7 @@
 #define N 1024
 
 pthread_cond_t cond;
-
+int flag;
 struct put
 {
 	pthread_mutex_t mutex[N];	
