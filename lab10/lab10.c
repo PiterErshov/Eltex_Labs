@@ -6,9 +6,7 @@ int main(int argc, char *argv[])
 	pthread_t threads[N];
 	void *status[atoi(argv[1])];
 	int ret;
-
 	put.max = atoi(argv[1]);
-	
 	for (int i = 0; i < atoi(argv[1]); i++)
 	{
 		pthread_mutex_init(&put.mutex[i], NULL);
@@ -20,8 +18,8 @@ int main(int argc, char *argv[])
 		}
 		put.kill[i] = 0;
 	}
-	for (int j = 0; j < put.max; j++)
-			pthread_mutex_unlock(&put.mutex[j]);
+	
+	pthread_cond_broadcast(&cond);
 	/*
 	for (int i = 0; i < put.max; i++)
 	{

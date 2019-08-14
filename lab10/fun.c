@@ -6,13 +6,16 @@ void *fighter(void *arg)
 	void *status;
 	
 	printf("Thread %d ready\n", i);
+	fflush(stdout);
 	pthread_mutex_lock(&put.mutex[i]);
-	
-	if (i == put.max - 1)
-		for (int j = 0; j < put.max; j++)
-			pthread_mutex_unlock(&put.mutex[j]);
-	//*/
-	//*
+	while(1)
+	{
+		pthread_cond_wait(&cond, &put.mutex[i]);
+	}
+	pthread_mutex_unlock(&put.mutex[i]);
+	//if (i == put.max - 1)
+		//pthread_cond_broadcast(&put.cond);
+	/*	
 	while (1)
 	{
 		srand(i * time(NULL));
@@ -22,6 +25,7 @@ void *fighter(void *arg)
 			break;
 	}
 	printf("Thread %d kill thread %d\n", i, pt);
+	//fflush(stdout);
 	pthread_cancel(put.threads[pt]);
 	put.kill[pt] = 1;
 	/*int j = 0;
@@ -31,6 +35,8 @@ void *fighter(void *arg)
 		fflush (stdout);
 		j++;
 	}*/
+	/*pthread_mutex_lock(&put.mutex[i]);
 	put.w = i;
+	pthread_mutex_unlock(&put.mutex[i]);*/
 	pthread_exit(NULL);
 }
