@@ -13,7 +13,7 @@ struct put
 	pthread_mutex_t mutex[N];	
 	pthread_t threads[N];
 	int kill[N];	
-	int max;
+	int max, live;
 	char data[N][N];
 	int w;
 } put;

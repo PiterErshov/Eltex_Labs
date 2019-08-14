@@ -7,6 +7,7 @@ int main(int argc, char *argv[])
 	void *status[atoi(argv[1])];
 	int ret;
 	put.max = atoi(argv[1]);
+	put.live = atoi(argv[1]);
 	flag = 1;
 	for (int i = 0; i < atoi(argv[1]); i++)
 	{		
