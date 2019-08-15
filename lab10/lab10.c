@@ -22,8 +22,9 @@ int main(int argc, char *argv[])
 		put.kill[i] = 0;
 	}
 	//sleep(2);
-	flag = 0;
+	
 	pthread_cond_broadcast(&cond);
+	flag = 0;
 	//*
 	for (int i = 0; i < put.max; i++)
 	{
