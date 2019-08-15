@@ -6,16 +6,19 @@
 
 #define N 1024
 
-pthread_cond_t cond;
-int flag;
-struct put
-{
-	pthread_mutex_t mutex[N];	
-	pthread_t threads[N];
-	int kill[N];	
-	int max, live;
-	char data[N][N];
-	int w;
-} put;
 
-void *fighter(void *arg);//функция-боец: убивате случайный поток, если id потока не равен её собственному
+	pthread_mutex_t mutex;
+
+char **file_name;
+
+char** read_mas(FILE *fr, int *s);//чтение из массива строк
+
+int** ToInt(char **mas, int s, int *p); // из строкового массива в числовую матрицу
+
+void *M_x(void *arg);
+
+void printMas(char **mas, int *count);	//вывод массива
+
+void freeMas(char **mas); //очистка массива
+
+void freeMasI(int **mas, int n) ; //очистка массива
