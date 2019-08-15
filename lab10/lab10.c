@@ -8,7 +8,7 @@ int main(int argc, char *argv[])
 	int ret;
 	put.max = atoi(argv[1]);
 	put.live = atoi(argv[1]);
-	flag = 1;
+	flag = atoi(argv[1]);
 	for (int i = 0; i < atoi(argv[1]); i++)
 	{		
 		int *f = malloc(sizeof (int));
@@ -21,10 +21,9 @@ int main(int argc, char *argv[])
 		}
 		put.kill[i] = 0;
 	}
-	//sleep(2);
+	sleep(1);
 	
 	pthread_cond_broadcast(&cond);
-	flag = 0;
 	//*
 	for (int i = 0; i < put.max; i++)
 	{

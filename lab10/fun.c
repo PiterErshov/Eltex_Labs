@@ -5,19 +5,20 @@ void *fighter(void *arg)
 	int i = *(int *) arg, res, pt = 0;
 	void *status;
 	pthread_mutex_t mut;
-	//printf("Thread %d ready\n", i);
+	
+	printf("Thread %d ready\n", i);
+	
 	fflush(stdout);
 	pthread_mutex_lock(&put.mutex[i]);
+	flag--;
 	while (flag > 0)
 	{
 		pthread_cond_wait(&cond, &put.mutex[i]);
 	}
 	pthread_mutex_unlock(&put.mutex[i]);
-	//*     
-
-	pthread_mutex_lock(&mut);
-	//sleep(1);	
-	pthread_mutex_unlock(&mut);
+	printf("Thread %d do\n", i);
+	fflush(stdout);
+	/*     
 	pthread_mutex_lock(&mut);
 	if (put.live > 1)
 	{
@@ -25,7 +26,7 @@ void *fighter(void *arg)
 		{
 			srand(i * time(NULL));
 			srand(rand());
-			pt = rand() % put.live;
+			pt = rand() % put.max;
 			if (pt != i && put.kill[pt] == 0)
 				break;
 			else if (put.live > 1)
