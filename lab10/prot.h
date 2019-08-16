@@ -19,6 +19,10 @@ void *M_x(void *arg);
 
 void printMas(char **mas, int *count);	//вывод массива
 
+void print_mat(int **mas, int n, int m);//вывод матрицы
+
+int checksum(int *mas, int n);//проверка суммы вероятностей
+
 void freeMas(char **mas); //очистка массива
 
 void freeMasI(int **mas, int n) ; //очистка массива

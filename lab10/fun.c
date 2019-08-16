@@ -16,7 +16,6 @@ char **read_mas(FILE * fr, int *s)	//чтение из файла массива
 			i++;
 		}
 	}
-	printMas(ch, &i);
 	*s = i;
 	return ch;
 	freeMas(ch);
@@ -65,14 +64,26 @@ int **ToInt(char **mas, int s, int *p)	// из строкового массив
 		}
 	}
 	return m;
-	freeMasI(m, n);
+	freeMasI(m, s);
+}
+
+int checksum(int *mas, int n)
+{
+	int buf = 0;
+	for(int i = 0; i < n; i++)
+		buf += mas[i];
+	if(buf == 100)
+		return 1;
+	else
+		return 0;
 }
 
 void *M_x(void *arg)
 {
-	int i = *(int *) arg, s = 0;
+	int i = *(int *) arg, s = 0, p = 0;
 	char **mas = NULL;
 	int **mat = NULL;
+	int M = 0;
 	FILE *fl;
 	if ((fl = fopen(file_name[i], "r")) == NULL)
 	{
@@ -80,11 +91,24 @@ void *M_x(void *arg)
 		exit(1);
 	}
 	mas = read_mas(fl, &s);	
-	
+	fclose(fl);
 	pthread_mutex_lock(&mutex);
-	
-	printMas(mas, &s);
-	
+	mat = ToInt(mas, s, &p);
+	if(checksum(mat[1], p))
+	{	
+		for(int j = 0; j < p; j++)
+			M += mat[0][j] * mat[1][j];
+		printf("Математическое ожидание дискретной случайной величны из файла %s = %d\n", file_name[i], M);
+	}
+	else
+	{
+		printf("Некорректный формат дискретной случайной величины\n");
+		printf("Сумма вероятностей должна равнятся 100\n");
+		pthread_mutex_unlock(&mutex);
+		pthread_exit(NULL);
+	}
+	freeMas(mas);
+	freeMasI(mat, s);
 	pthread_mutex_unlock(&mutex);
 	pthread_exit(NULL);
 }
@@ -93,8 +117,16 @@ void printMas(char **mas, int *count)	//вывод массива
 {
 	for (int i = 0; i < *count; i++)
 	{
-		printf("\n");
-		printf("%s", mas[i]);
+		printf("%s\n", mas[i]);
+	}
+}
+
+void print_mat(int **mas, int n, int m)	//вывод матрицы
+{
+	for (int i = 0; i < n; i++)
+	{
+		for (int j = 0; j < m; j++)
+			printf(" %d ", mas[i][j]);
 		printf("\n");
 	}
 }
