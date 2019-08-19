@@ -1,6 +1,5 @@
 #include "prot.h"
 
-<<<<<<< HEAD
 
 int main(int argc, char *argv[])
 {
@@ -43,10 +42,5 @@ int main(int argc, char *argv[])
     if (sendto(sock, sendOut, sendOutLen, 0, (struct sockaddr *) &broadcastAddr, sizeof(broadcastAddr)) != sendOutLen)
 		printf("Error");
     close(sock);
-=======
-int main(int argc, char *argv[])
-{
-	
->>>>>>> 146e62aef11a0c9e7361e63071d20b3330f1d3b9
 	return 0;
 }
