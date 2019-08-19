@@ -6,8 +6,7 @@
 
 #define N 1024
 
-
-	pthread_mutex_t mutex;
+pthread_mutex_t mutex;
 
 char **file_name;
 
