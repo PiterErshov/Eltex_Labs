@@ -2,6 +2,7 @@
 
 int main(int argc, char *argv[])
 {
+<<<<<<< HEAD
 	int sock, s1;                         /* Socket */
     struct sockaddr_in broadcastAddr; /* Broadcast address */
     char *broadcastIP;                /* IP broadcast address */
@@ -58,5 +59,8 @@ int main(int argc, char *argv[])
         sleep(1);   /* Avoids flooding the network */
     }
     close(sock);
+=======
+	
+>>>>>>> 146e62aef11a0c9e7361e63071d20b3330f1d3b9
 	return 0;
 }
