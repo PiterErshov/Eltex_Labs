@@ -2,14 +2,15 @@
 
 int main(int argc, char *argv[])
 {
-	int sock;		/* Socket */
+	int sock;	/* Socket */	
 	struct sockaddr_in broadcastAddr;	/* Broadcast address */
 	char *broadcastIP;	/* IP broadcast address */
-	unsigned short broadcastPort;	/* Server port */
+		/* Server port */
 	char *sendString;	/* String to broadcast */
 	int broadcastPermission;	/* Socket opt to set permission to broadcast */
 	unsigned int sendStringLen;	/* Length of string to broadcast */
-	char recvString[MAXRECVSTRING+1];
+	
+	flag = 0;
 	if (argc < 4)		/* Test for correct number of parameters */
 	{
 		fprintf(stderr,
@@ -32,7 +33,7 @@ int main(int argc, char *argv[])
 	    (sock, SOL_SOCKET, SO_BROADCAST, (void *) &broadcastPermission,
 	     sizeof (broadcastPermission)) < 0)
 		printf("Error");
-
+	
 	/* Construct local address structure */
 	memset(&broadcastAddr, 0, sizeof (broadcastAddr));	/* Zero out structure */
 	broadcastAddr.sin_family = AF_INET;	/* Internet address family */
@@ -40,17 +41,35 @@ int main(int argc, char *argv[])
 	broadcastAddr.sin_port = htons(broadcastPort);	/* Broadcast port */
 
 	sendStringLen = strlen(sendString);	/* Find length of sendString */
-	for (;;)		/* Run forever */
+		
+	int result;
+	pthread_t threads;
+	void *status;
+
+	result = pthread_create(&threads, NULL, broadcaster, NULL);
+	if (result != 0)
 	{
+		perror("Creating the first thread");
+		return EXIT_FAILURE;
+	}	
+	
+	for (int i = 0;; i++)		/* Run forever */
+	{
+		
+		if (flag == 1)
+			break;
 		/* Broadcast sendString in datagram to clients every 3 seconds */
 		if (sendto(sock, sendString, sendStringLen, 0,
 			   (struct sockaddr *) &broadcastAddr,
 			   sizeof (broadcastAddr)) != sendStringLen)
 			printf("Error");
-		if (recvfrom(sock, recvString, MAXRECVSTRING, 0, NULL, 0) > 0)
-			break;
-		sleep(3);	/* Avoids flooding the network */
+		
+		sleep(1);	/* Avoids flooding the network */
 	}
+	
+	result = pthread_join(threads, &status);
+	if (result != 0)
+		return EXIT_FAILURE;
 	close(sock);
 	return 0;
 }

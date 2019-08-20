@@ -11,5 +11,7 @@
 #include <net/if.h>
 
 #define MAXRECVSTRING 255
+unsigned short broadcastPort;
+int flag;
 
 void * broadcaster(void *agv);//широковещательная функция поиска клиентов
