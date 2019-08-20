@@ -52,7 +52,7 @@ int main(int argc, char *argv[])
                printf("Error");
              //DieWithError("sendto() sent a different number of bytes than expected");
         
-		if (recvfrom(s1, recvString, 255, 0, NULL, 0) > 0)
+		if (recvfrom(sock, recvString, 255, 0, NULL, 0) > 0)
 			if(atoi(recvString) == 1)
 				break;
         sleep(1);   /* Avoids flooding the network */

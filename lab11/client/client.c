@@ -10,7 +10,7 @@ int main(int argc, char *argv[])
     int recvStringLen;                /* Length of received string */
     char *sendOut; 
 	unsigned int sendOutLen; 
-    if (argc != 3)    /* Test for correct number of arguments */
+    if (argc != 4)    /* Test for correct number of arguments */
     {
         fprintf(stderr,"Usage: %s <Broadcast Port>\n", argv[0]);
         exit(1);
@@ -21,11 +21,12 @@ int main(int argc, char *argv[])
     /* Create a best-effort datagram socket using UDP */
     if ((sock = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP)) < 0)
         printf("Error");//DieWithError("socket() failed");
-
+	char *broadcastIP; 
+	broadcastIP = argv[3];
     /* Construct bind structure */
     memset(&broadcastAddr, 0, sizeof(broadcastAddr));   /* Zero out structure */
     broadcastAddr.sin_family = AF_INET;                 /* Internet address family */
-    broadcastAddr.sin_addr.s_addr = htonl(INADDR_ANY);  /* Any incoming interface */
+    broadcastAddr.sin_addr.s_addr = inet_addr(broadcastIP); /* Any incoming interface */
     broadcastAddr.sin_port = htons(broadcastPort);      /* Broadcast port */
 
     /* Bind to the broadcast port */
@@ -39,8 +40,8 @@ int main(int argc, char *argv[])
     recvString[recvStringLen] = '\0';
     printf("Received: %s\n", recvString);    /* Print the received string */
     sendOutLen = strlen(sendOut);
-    if (sendto(sock, sendOut, sendOutLen, 0, (struct sockaddr *) &broadcastAddr, sizeof(broadcastAddr)) != sendOutLen)
-		printf("Error");
+   
+   
     close(sock);
 	return 0;
 }
