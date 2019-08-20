@@ -9,7 +9,7 @@ int main(int argc, char *argv[])
 	char *sendString;	/* String to broadcast */
 	int broadcastPermission;	/* Socket opt to set permission to broadcast */
 	unsigned int sendStringLen;	/* Length of string to broadcast */
-
+	char recvString[MAXRECVSTRING+1];
 	if (argc < 4)		/* Test for correct number of parameters */
 	{
 		fprintf(stderr,
@@ -28,7 +28,8 @@ int main(int argc, char *argv[])
 
 	/* Set socket to allow broadcast */
 	broadcastPermission = 1;
-	if (setsockopt(sock, SOL_SOCKET, SO_BROADCAST, (void *) &broadcastPermission,
+	if (setsockopt
+	    (sock, SOL_SOCKET, SO_BROADCAST, (void *) &broadcastPermission,
 	     sizeof (broadcastPermission)) < 0)
 		printf("Error");
 
@@ -43,10 +44,11 @@ int main(int argc, char *argv[])
 	{
 		/* Broadcast sendString in datagram to clients every 3 seconds */
 		if (sendto(sock, sendString, sendStringLen, 0,
-		     (struct sockaddr *) &broadcastAddr,
-		     sizeof (broadcastAddr)) != sendStringLen)
+			   (struct sockaddr *) &broadcastAddr,
+			   sizeof (broadcastAddr)) != sendStringLen)
 			printf("Error");
-
+		if (recvfrom(sock, recvString, MAXRECVSTRING, 0, NULL, 0) > 0)
+			break;
 		sleep(3);	/* Avoids flooding the network */
 	}
 	close(sock);

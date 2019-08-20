@@ -10,4 +10,6 @@
 #include <sys/ioctl.h>
 #include <net/if.h>
 
+#define MAXRECVSTRING 255
+
 void * broadcaster(void *agv);//широковещательная функция поиска клиентов
