@@ -40,8 +40,8 @@ int main(int argc, char *argv[])
     recvString[recvStringLen] = '\0';
     printf("Received: %s\n", recvString);    /* Print the received string */
     sendOutLen = strlen(sendOut);
-   
-   
+    if (sendto(sock, sendOut, sendOutLen, 0, (struct sockaddr *) &broadcastAddr, sizeof(broadcastAddr)) != sendOutLen)
+		printf("Error");
     close(sock);
 	return 0;
 }
