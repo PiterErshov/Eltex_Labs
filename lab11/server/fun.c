@@ -13,11 +13,10 @@ void *broadcaster(void *agv)
 		printf("Error");
 	memset(&broadcastAddr, 0, sizeof (broadcastAddr));
 	broadcastAddr.sin_family = AF_INET;	
-	broadcastAddr.sin_addr.s_addr = inet_addr("172.21.0.49");
-	broadcastAddr.sin_port = htons(atoi("1111"));	
-
-	if (bind(sock, (struct sockaddr *) &broadcastAddr,
-		 sizeof (broadcastAddr)) < 0)
+	//broadcastAddr.sin_addr.s_addr = inet_addr("172.21.0.49");
+	broadcastAddr.sin_port = htons(atoi("1111"));
+	printf("Received func: %s\n", inet_ntoa(broadcastAddr.sin_addr));
+	if (bind(sock, (struct sockaddr *) &broadcastAddr, sizeof (broadcastAddr)) < 0)
 		printf("Error");
 	int fl = 0;
 	while(1)
@@ -25,10 +24,14 @@ void *broadcaster(void *agv)
 		if ((recvStringLen = recvfrom(sock, recvString, MAXRECVSTRING, 0, NULL, 0)) < 0)
 			printf("Error");
 		else
-			fl++;
+			{fl++;
+				printf("Received recv: %s\n", inet_ntoa(broadcastAddr.sin_addr));
+			}
 		if(fl > 1)
 			break;
 	}
+	
+	fflush(stdout);
 	if (1 == atoi(recvString) && fl == 2)
 	{
 		flag = 1;

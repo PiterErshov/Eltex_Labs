@@ -12,6 +12,8 @@
 
 #define MAXRECVSTRING 255
 
+char *broadcastIP;
+
 unsigned short outPort;	
 
 void * broadcaster(void *agv);//широковещательная функция поиска клиентов
