@@ -9,7 +9,7 @@ int main(int argc, char *argv[])
 	int broadcastPermission;
 	char recvString[MAXRECVSTRING + 1];	/* Buffer for received string */
 	int recvStringLen;	/* Length of received string */
-	
+	char *broadcastIP;
 
 	if (argc != 3)		/* Test for correct number of arguments */
 	{
@@ -25,17 +25,14 @@ int main(int argc, char *argv[])
 	/* Construct bind structure */
 	memset(&broadcastAddr, 0, sizeof (broadcastAddr));	/* Zero out structure */
 	broadcastAddr.sin_family = AF_INET;	/* Internet address family */
-	//broadcastAddr.sin_addr.s_addr = inet_addr(broadcastIP);	/* Any incoming interface */
+	broadcastAddr.sin_addr.s_addr = inet_addr(broadcastIP);	/* Any incoming interface */
 	broadcastAddr.sin_port = htons(broadcastPort);	/* Broadcast port */
+	
 	/* Bind to the broadcast port */
-	//printf("Received 1: %s\n", inet_ntoa(broadcastAddr.sin_addr));
 	if (bind(sock, (struct sockaddr *) &broadcastAddr,
 	     sizeof (broadcastAddr)) < 0)
 		printf("Error");
-
-	//if (bind(s1, (struct sockaddr *) &broadcastAddr, sizeof (broadcastAddr)) < 0)
-		//printf("Error");
-
+		
 	/* Receive a single datagram from the server */
 	if ((recvStringLen =
 	     recvfrom(sock, recvString, MAXRECVSTRING, 0, NULL, 0)) < 0)
@@ -43,7 +40,7 @@ int main(int argc, char *argv[])
 
 	recvString[recvStringLen] = '\0';
 	printf("Received: %s\n", recvString);	/* Print the received string */
-	//printf("Received 1.1: %s\n", inet_ntoa(broadcastAddr.sin_addr));
+	
 	int result;
 	pthread_t threads;
 	void *status;
@@ -58,7 +55,7 @@ int main(int argc, char *argv[])
 	result = pthread_join(threads, &status);
 	if (result != 0)
 		return EXIT_FAILURE;
-	sleep(4);
+	sleep(1);
 	close(sock);
 	return 0;
 }

@@ -14,9 +14,9 @@ void *broadcaster(void *agv)
 	/* Construct bind structure */
 	memset(&broadcastAddr, 0, sizeof (broadcastAddr));	/* Zero out structure */
 	broadcastAddr.sin_family = AF_INET;	/* Internet address family */
-	broadcastAddr.sin_addr.s_addr = inet_addr(broadcastIP);	/* Any incoming interface */
-	broadcastAddr.sin_port = htons(outPort);	/* Broadcast port */
-	//printf("Received 2: %s\n", inet_ntoa(broadcastAddr.sin_addr));
+	broadcastAddr.sin_addr.s_addr = inet_addr("172.21.0.49");	/* Any incoming interface */
+	broadcastAddr.sin_port = htons(atoi("1111"));	/* Broadcast port */
+
 	/* Bind to the broadcast port */
 	
 	sendOut = "1";
