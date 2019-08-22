@@ -1,15 +1,15 @@
 #include "prot.h"
 
 void *broadcast_recv(void *agv)
-{
+{	
+	pthread_mutex_lock(&mutex);
 	int sock;
 	struct sockaddr_in broadcastAddr;
 	char recvString[MAXRECVSTRING + 1];
 	int recvStringLen;
-
 	if ((sock = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP)) < 0)
 		printf("Error. broadcast_recv socket");
-
+	
 	memset(&broadcastAddr, 0, sizeof (broadcastAddr));	/* Zero out structure */
 	broadcastAddr.sin_family = AF_INET;	/* Internet address family */
 	broadcastAddr.sin_addr.s_addr = inet_addr(broadcastIP);	/* Any incoming interface */
@@ -19,7 +19,7 @@ void *broadcast_recv(void *agv)
 	if (bind(sock, (struct sockaddr *) &broadcastAddr,
 		 sizeof (broadcastAddr)) < 0)
 		printf("Error. broadcast_recv bind");
-	pthread_mutex_lock(&mutex);
+	
 	/* Receive a single datagram from the server */
 	int p = sizeof (broadcastAddr);
 	if ((recvStringLen =
@@ -31,8 +31,9 @@ void *broadcast_recv(void *agv)
 
 	outPort = atoi(recvString);
 	printf("Received: %d\n", outPort);	/* Print the received string */
-	pthread_mutex_unlock(&mutex);
+	
 	close(sock);
+	pthread_mutex_unlock(&mutex);
 	pthread_exit(NULL);
 }
 
@@ -67,6 +68,7 @@ void *broadcast_send(void *agv)
 //*
 void *TCPcon(void *agv)
 {
+	
 	int sock;	
 	struct sockaddr_in echoServAddr;	
 	char *servIP;		
@@ -77,17 +79,14 @@ void *TCPcon(void *agv)
 	
 	if ((sock = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0)
 		printf("Error. TCPcon socket");
-
-	
+	pthread_mutex_lock(&mutex);
 	memset(&echoServAddr, 0, sizeof (echoServAddr));
 	echoServAddr.sin_family = AF_INET;	
-	echoServAddr.sin_addr.s_addr = inet_addr("172.21.0.49");	
-	echoServAddr.sin_port = htons(1111);	
+	echoServAddr.sin_addr.s_addr = inet_addr(outIP);	
+	echoServAddr.sin_port = htons(outPort);	
 
-	
 	if (connect(sock, (struct sockaddr *) &echoServAddr, sizeof (echoServAddr)) < 0)
 		printf("Error. TCPcon connect");
-
 	echoString = "Die";
 	echoStringLen = strlen(echoString);	
 	
@@ -108,7 +107,7 @@ void *TCPcon(void *agv)
 	//}
 	
 	printf("\n");		
-
+	pthread_mutex_unlock(&mutex);
 	close(sock);
 	pthread_exit(NULL);
 }

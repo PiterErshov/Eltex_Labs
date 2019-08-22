@@ -108,7 +108,7 @@ void *TCPcon(void *agv)
 		printf("Error\n");
 	
 	Buffer = malloc(sizeof(int)*RCVBUFSIZE);
-	strcmp(Buffer, "HELLO");
+	//strcmp(Buffer, "HELLO");
 	//Buffer[RCVBUFSIZE] = '\0';
 	for (;;)
 	{
@@ -117,7 +117,7 @@ void *TCPcon(void *agv)
 			printf("Error\n");
 		printf("Handling client %s\n", inet_ntoa(echoClntAddr.sin_addr));
 
-		if (send(clntSock, Buffer, RCVBUFSIZE, 0) < 0)
+		if (send(clntSock, , RCVBUFSIZE, 0) < 0)
             printf("Error\n");
       // if ((recvMsgSize = recv(clntSocket, echoBuffer, RCVBUFSIZE, 0)) < 0)
         //    printf("Error\n");
