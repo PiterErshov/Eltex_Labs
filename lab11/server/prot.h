@@ -11,7 +11,15 @@
 #include <net/if.h>
 
 #define MAXRECVSTRING 255
+#define MAXPENDING 5
+#define RCVBUFSIZE 32
 unsigned short broadcastPort;
+char *broadcastIP;	/* IP broadcast address */
+char *TCPport;	/* String to broadcast */
 int flag;
 
-void * broadcaster(void *agv);//широковещательная функция поиска клиентов
+void * broadcaster(void *agv);
+
+void * broadcast_s(void *agv);//широковещательная функция поиска клиентов
+
+void *TCPcon(void *agv);

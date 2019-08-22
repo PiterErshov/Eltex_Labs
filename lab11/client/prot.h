@@ -11,7 +11,15 @@
 #include <net/if.h>
 
 #define MAXRECVSTRING 255
-
+#define RCVBUFSIZE 32
 unsigned short outPort;	
+char *sendOut;
+unsigned short broadcastPort;
+char *broadcastIP, *outIP;
+pthread_mutex_t mutex;
 
-void * broadcaster(void *agv);//широковещательная функция поиска клиентов
+void * broadcast_send(void *agv);
+
+void * broadcast_recv(void *agv);//широковещательная функция поиска клиентов
+
+void *TCPcon(void *agv);

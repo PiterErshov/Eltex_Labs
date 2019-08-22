@@ -3,14 +3,6 @@
 
 int main(int argc, char *argv[])
 {
-	int sock;		/* Socket */
-	struct sockaddr_in broadcastAddr;	/* Broadcast Address */
-	unsigned short broadcastPort;	/* Port */
-	int broadcastPermission;
-	char recvString[MAXRECVSTRING + 1];	/* Buffer for received string */
-	int recvStringLen;	/* Length of received string */
-	char *broadcastIP;
-
 	if (argc != 3)		/* Test for correct number of arguments */
 	{
 		fprintf(stderr, "Usage: %s <Broadcast Port>\n", argv[0]);
@@ -19,43 +11,29 @@ int main(int argc, char *argv[])
 
 	broadcastPort = atoi(argv[1]);	/* First arg: broadcast port */
 	broadcastIP = argv[2];
-	/* Create a best-effort datagram socket using UDP */
-	if ((sock = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP)) < 0)
-		printf("Error");
-	/* Construct bind structure */
-	memset(&broadcastAddr, 0, sizeof (broadcastAddr));	/* Zero out structure */
-	broadcastAddr.sin_family = AF_INET;	/* Internet address family */
-	broadcastAddr.sin_addr.s_addr = inet_addr(broadcastIP);	/* Any incoming interface */
-	broadcastAddr.sin_port = htons(broadcastPort);	/* Broadcast port */
-	
-	/* Bind to the broadcast port */
-	if (bind(sock, (struct sockaddr *) &broadcastAddr,
-	     sizeof (broadcastAddr)) < 0)
-		printf("Error");
-		
-	/* Receive a single datagram from the server */
-	if ((recvStringLen =
-	     recvfrom(sock, recvString, MAXRECVSTRING, 0, NULL, 0)) < 0)
-		printf("Error");
 
-	recvString[recvStringLen] = '\0';
-	printf("Received: %s\n", recvString);	/* Print the received string */
 	
 	int result;
-	pthread_t threads;
-	void *status;
-	outPort = atoi(recvString);
-	result = pthread_create(&threads, NULL, broadcaster, NULL);
+	pthread_t threads[2];
+	void *status[2];
+
+	result = pthread_create(&threads[0], NULL, broadcast_recv, NULL);
 	if (result != 0)
 	{
 		perror("Creating the first thread");
 		return EXIT_FAILURE;
-	}	
-	
-	result = pthread_join(threads, &status);
+	}
+	result = pthread_create(&threads[1], NULL, TCPcon, NULL);
 	if (result != 0)
+	{
+		perror("Creating the first thread");
 		return EXIT_FAILURE;
-	sleep(1);
-	close(sock);
+	}
+	for (int i = 0; i < 2; i++)
+	{
+		result = pthread_join(threads[i], &status[i]);
+		if (result != 0)
+			return EXIT_FAILURE;
+	}
 	return 0;
 }
