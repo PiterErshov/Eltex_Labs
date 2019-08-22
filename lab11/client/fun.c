@@ -8,7 +8,7 @@ void *broadcast_recv(void *agv)
 	int recvStringLen;
 
 	if ((sock = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP)) < 0)
-		printf("Error");
+		printf("Error. broadcast_recv socket");
 
 	memset(&broadcastAddr, 0, sizeof (broadcastAddr));	/* Zero out structure */
 	broadcastAddr.sin_family = AF_INET;	/* Internet address family */
@@ -18,14 +18,14 @@ void *broadcast_recv(void *agv)
 	/* Bind to the broadcast port */
 	if (bind(sock, (struct sockaddr *) &broadcastAddr,
 		 sizeof (broadcastAddr)) < 0)
-		printf("Error");
+		printf("Error. broadcast_recv bind");
 	pthread_mutex_lock(&mutex);
 	/* Receive a single datagram from the server */
 	int p = sizeof (broadcastAddr);
 	if ((recvStringLen =
 	     recvfrom(sock, recvString, MAXRECVSTRING, 0,
 		      (struct sockaddr *) &broadcastAddr, &p)) < 0)
-		printf("Error");
+		printf("Error. broadcast_recv recvfrom");
 	outIP = inet_ntoa(broadcastAddr.sin_addr);
 	recvString[recvStringLen] = '\0';
 
@@ -44,7 +44,7 @@ void *broadcast_send(void *agv)
 	char *broadcastIP, *sendString;	/* IP broadcast address */
 	unsigned int sendOutLen;
 	if ((sock = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP)) < 0)
-		printf("Error");
+		printf("Error. broadcast_send socket");
 	/* Construct bind structure */
 	memset(&broadcastAddr, 0, sizeof (broadcastAddr));	/* Zero out structure */
 	broadcastAddr.sin_family = AF_INET;	/* Internet address family */
@@ -58,7 +58,7 @@ void *broadcast_send(void *agv)
 	if (sendto
 	    (sock, sendOut, sendOutLen, 0, (struct sockaddr *) &broadcastAddr,
 	     sizeof (broadcastAddr)) != sendOutLen)
-		printf("Error");
+		printf("Error. broadcast_send sendto");
 	pthread_mutex_unlock(&mutex);
 	close(sock);
 	pthread_exit(NULL);
@@ -76,7 +76,7 @@ void *TCPcon(void *agv)
 	int bytesRcvd, totalBytesRcvd;	
 	
 	if ((sock = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0)
-		printf("Error");
+		printf("Error. TCPcon socket");
 
 	
 	memset(&echoServAddr, 0, sizeof (echoServAddr));
@@ -86,7 +86,7 @@ void *TCPcon(void *agv)
 
 	
 	if (connect(sock, (struct sockaddr *) &echoServAddr, sizeof (echoServAddr)) < 0)
-		printf("Error");
+		printf("Error. TCPcon connect");
 
 	echoString = "Die";
 	echoStringLen = strlen(echoString);	
@@ -99,7 +99,7 @@ void *TCPcon(void *agv)
 	//while (totalBytesRcvd < echoStringLen)
 	//{
 		if ((bytesRcvd = recv(sock, echoBuffer, RCVBUFSIZE, 0)) <= 0)
-			printf("Error");
+			printf("Error. TCPcon recv");
 	//	totalBytesRcvd += bytesRcvd;
 		echoBuffer[bytesRcvd] = '\0';	
 		printf("TTTT %s", echoBuffer);	
