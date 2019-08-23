@@ -48,7 +48,7 @@ void *broadcast_recv(void *agv)
 //*
 void *TCPcon(void *agv)
 {
-	int sock, x, y;
+	int sock, x, y, targets = 0;
 	struct sockaddr_in echoServAddr;
 	char *servIP;
 	char *echoString;
@@ -104,44 +104,12 @@ void *TCPcon(void *agv)
 	   } */
 
 	srand(time(NULL));
-	int Mx = rand() % x + 1;
+	int Mx = rand() % x;
 	srand(time(NULL));
-	int My = rand() % y + 1;
-
-	if (Mx < x / 2 && My < y / 2)
-	{
-		srand(time(NULL));
-		if (rand() % 2 == 0)
-			
-		else
-			
-	}
-	if (Mx < x / 2 && My > y / 2)
-	{
-		srand(time(NULL));
-		if (rand() % 2 == 0)
-			
-		else
-			
-	}
-	if (Mx > x / 2 && My < y / 2)
-	{
-		srand(time(NULL));
-		if (rand() % 2 == 0)
-			
-		else
-			
-	}
-	if (Mx > x / 2 && My > y / 2)
-	{
-		srand(time(NULL));
-		if (rand() % 2 == 0)
-			
-		else
-			
-	}
-	
-	//printf("%d, %d", Mx, My);
+	int My = rand() % y;
+	printf("%d, %d\n", Mx, My);
+	targets = search_target(x, y, Mx, My, map);
+	printf("Цели %d", targets);
 	printf("\n");
 	close(sock);
 	pthread_exit(NULL);
@@ -173,4 +141,104 @@ void *broadcast_send(void *agv)
 	//pthread_mutex_unlock(&mutex);
 	close(sock);
 	pthread_exit(NULL);
+}
+
+int search_target(int x, int y, int Mx, int My, char **map)
+{	
+	int targets = 0;
+	if (Mx < x / 2 && My < y / 2)
+	{
+		srand(time(NULL));
+		if (rand() % 2 == 0)
+			for(int i = Mx; i < x; i++)
+			{	
+				if(map[i][My] == '1')
+					targets++;
+			}
+		else
+			for(int i = My; i < y; i++)
+			{	
+				if(map[Mx][i] == '1')
+					targets++;
+			}			
+	}
+	if (Mx < x / 2 && My > y / 2)
+	{
+		srand(time(NULL));
+		if (rand() % 2 == 0)
+		for(int i = Mx; i < x; i++)
+			{	
+				if(map[i][My] == '1')
+					targets++;
+			}
+		else
+			for(int i = My; i > 0; i--)
+			{	
+				if(map[Mx][i] == '1')
+					targets++;
+			}					
+	}
+	if (Mx > x / 2 && My < y / 2)
+	{
+		srand(time(NULL));
+		if (rand() % 2 == 0)
+		for(int i = Mx; i > 0; i--)
+			{	
+				if(map[i][My] == '1')
+					targets++;
+			}
+		else
+			for(int i = My; i < y; i++)
+			{	
+				if(map[Mx][i] == '1')
+					targets++;
+			}			
+	}
+	if (Mx > x / 2 && My > y / 2)
+	{
+		srand(time(NULL));
+		if (rand() % 2 == 0)
+		for(int i = Mx; i > 0; i--)
+			{	
+				if(map[i][My] == '1')
+					targets++;
+			}
+		else
+			for(int i = My; i > 0; i--)
+			{	
+				if(map[Mx][i] == '1')
+					targets++;
+			}		
+	}
+	if (Mx == x / 2 && My == y / 2)
+	{
+		srand(time(NULL));
+		int w = rand() % 4;
+		if (w == 0)
+		for(int i = Mx; i > 0; i--)
+		{	
+			if(map[i][My] == '1')
+				targets++;
+		}
+		if (w == 1)
+		for(int i = My; i < y; i++)
+		{	
+			if(map[Mx][i] == '1')
+				targets++;
+		}
+		if (w == 2)
+		for(int i = Mx; i < x; i++)
+		{	
+			if(map[i][My] == '1')
+				targets++;
+		}
+		if (w == 3)
+		for(int i = My; i > 0; i--)
+		{	
+			if(map[Mx][i] == '1')
+				targets++;
+		}				
+	}
+	
+	return targets;
 }

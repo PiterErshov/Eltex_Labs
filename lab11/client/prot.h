@@ -18,6 +18,8 @@ unsigned short broadcastPort;
 char *broadcastIP, *outIP;
 pthread_mutex_t mutex;
 
+int search_target(int x, int y, int Mx, int My, char **map);
+
 void * broadcast_send(void *agv);
 
 void * broadcast_recv(void *agv);//широковещательная функция поиска клиентов

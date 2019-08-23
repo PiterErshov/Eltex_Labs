@@ -105,7 +105,8 @@ void *TCPcon(void *agv)
 	
 	b = malloc(sizeof(int)* (x * y));
 	b = map_creat(x, y);
-	
+
+	   
 	for (;;)
 	{
 		clntLen = sizeof (echoClntAddr);
@@ -140,7 +141,15 @@ char* map_creat(int x, int y)
 				map[i][j] = '1';
 		}
 	}
-	
+		for (int i = 0; i < x; i++)
+	{            
+		for (int j = 0; j < y; j++)
+		{
+			printf(" %c ", map[i][j]);
+
+	   }
+	   printf("\n");
+	   } 
 	int k = 0;
 	for(int i =0; i < x; i++)
 		for(int j = 0; j < y; j++)
