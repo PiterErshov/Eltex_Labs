@@ -98,27 +98,27 @@ void *TCPcon(void *agv)
 	echoServAddr.sin_port = htons(atoi(TCPport));
 
 	if (bind(servSock, (struct sockaddr *) &echoServAddr, sizeof (echoServAddr)) < 0)
-		printf("Error\n");
+		printf("Error2\n");
 	if (listen(servSock, MAXPENDING) < 0)
 		printf("Error\n");
 	
 	
 	b = malloc(sizeof(int)* (x * y));
-	//map_creat(x, y);	
 	b = map_creat(x, y);
+	
 	for (;;)
 	{
 		clntLen = sizeof (echoClntAddr);
 		if ((clntSock = accept(servSock, (struct sockaddr *) &echoClntAddr, &clntLen)) < 0)
-			printf("Error\n");
+			printf("Error1\n");
 		printf("Handling client %s\n", inet_ntoa(echoClntAddr.sin_addr));
 
 		if (send(clntSock, &x, sizeof(int), 0) < 0)
-            printf("Error\n");
+            printf("Error2\n");
         if (send(clntSock, &y, sizeof(int), 0) < 0)
-            printf("Error\n");
-        if (send(clntSock,	b, sizeof(b), 0) < 0)
-            printf("Error\n");          
+            printf("Error3\n");
+        if (send(clntSock,	b, x * y, 0) < 0)
+            printf("Error4\n");          
 	}
 	pthread_exit(NULL);
 }
@@ -129,16 +129,14 @@ char* map_creat(int x, int y)
 	char *outmap = malloc(sizeof(char) * (x * y));
 	for(int i =0; i < x; i++)
 	{
-		srand(time(NULL));
-		srand(rand());
 		map[i] = calloc(y, sizeof(char));
 		for(int j = 0; j < y; j++)
 		{
 			srand(rand());
-			int f = 0 + rand() % 3;
+			int f = rand() % 2;
 			if(f == 0)
 				map[i][j] = '0';
-			else
+			if(f == 1)
 				map[i][j] = '1';
 		}
 	}

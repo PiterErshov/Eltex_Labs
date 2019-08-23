@@ -7,7 +7,7 @@ void *broadcast_recv(void *agv)
 	void *status;
 	struct sockaddr_in broadcastAddr;
 	char recvString[MAXRECVSTRING + 1];
-	
+
 	if ((sock = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP)) < 0)
 		printf("Error. broadcast_recv socket");
 
@@ -21,13 +21,15 @@ void *broadcast_recv(void *agv)
 		printf("Error. broadcast_recv bind");
 
 	int p = sizeof (broadcastAddr);
-	if ((recvStringLen = recvfrom(sock, recvString, MAXRECVSTRING, 0, (struct sockaddr *) &broadcastAddr, &p)) < 0)
+	if ((recvStringLen =
+	     recvfrom(sock, recvString, MAXRECVSTRING, 0,
+		      (struct sockaddr *) &broadcastAddr, &p)) < 0)
 		printf("Error. broadcast_recv recvfrom");
 	outIP = inet_ntoa(broadcastAddr.sin_addr);
 	recvString[recvStringLen] = '\0';
 
 	outPort = atoi(recvString);
-	
+
 	printf("Received: %d\n", recvStringLen);
 
 	close(sock);
@@ -50,33 +52,96 @@ void *TCPcon(void *agv)
 	struct sockaddr_in echoServAddr;
 	char *servIP;
 	char *echoString;
-	
+
 	unsigned int echoStringLen;
 	int size_mas, totalBytesRcvd;
 
 	if ((sock = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0)
 		printf("Error. TCPcon socket");
-		
+
 	memset(&echoServAddr, 0, sizeof (echoServAddr));
 	echoServAddr.sin_family = AF_INET;
 	echoServAddr.sin_addr.s_addr = inet_addr(outIP);
 	echoServAddr.sin_port = htons(outPort);
 
 	if (connect(sock, (struct sockaddr *) &echoServAddr,
-	     sizeof (echoServAddr)) < 0)
+		    sizeof (echoServAddr)) < 0)
 		printf("Error. TCPcon connect");
-	
-	if ((size_mas = recv(sock, &x, sizeof(x), 0)) <= 0)
+
+	if ((size_mas = recv(sock, &x, sizeof (x), 0)) <= 0)
 		printf("Error. TCPcon recv");
 	//printf("T1 %d\n", x);
-	if ((size_mas = recv(sock, &y, sizeof(y), 0)) <= 0)
+	if ((size_mas = recv(sock, &y, sizeof (y), 0)) <= 0)
 		printf("Error. TCPcon recv");
 	//printf("T1 %d\n", y);
-	char *echoBuffer = malloc(sizeof(char) * (x * y));
-	if ((recv(sock,	echoBuffer, x * y, 0)) <= 0)
+	char *echoBuffer = malloc(sizeof (char) * (60));
+	if ((recv(sock, echoBuffer, x * y, 0)) <= 0)
 		printf("Error. TCPcon recv");
-	printf("T1 %s\n", echoBuffer);
+	//printf("T1 %s\n", echoBuffer);
+
+	char **map = calloc(x, sizeof (char *));
+	int k = 0;
+	for (int i = 0; i < x; i++)
+	{
+		map[i] = calloc(y, sizeof (char *));
+		for (int j = 0; j < y; j++)
+		{
+			map[i][j] = echoBuffer[k];
+			if (k < x * y)
+				k++;
+		}
+	}
+	/*k = 0;
+	   for (int i = 0; i < x; i++)
+	   {            
+	   for (int j = 0; j < y; j++)
+	   {
+	   printf("[%d] = %c ", k,      map[i][j]);
+
+	   k++;
+	   }
+	   printf("\n");
+	   } */
+
+	srand(time(NULL));
+	int Mx = rand() % x + 1;
+	srand(time(NULL));
+	int My = rand() % y + 1;
+
+	if (Mx < x / 2 && My < y / 2)
+	{
+		srand(time(NULL));
+		if (rand() % 2 == 0)
+			
+		else
+			
+	}
+	if (Mx < x / 2 && My > y / 2)
+	{
+		srand(time(NULL));
+		if (rand() % 2 == 0)
+			
+		else
+			
+	}
+	if (Mx > x / 2 && My < y / 2)
+	{
+		srand(time(NULL));
+		if (rand() % 2 == 0)
+			
+		else
+			
+	}
+	if (Mx > x / 2 && My > y / 2)
+	{
+		srand(time(NULL));
+		if (rand() % 2 == 0)
+			
+		else
+			
+	}
 	
+	//printf("%d, %d", Mx, My);
 	printf("\n");
 	close(sock);
 	pthread_exit(NULL);
