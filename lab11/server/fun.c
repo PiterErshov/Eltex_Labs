@@ -92,7 +92,7 @@ void *TCPcon(void *agv)
 	struct sockaddr_in echoServAddr;
 	struct sockaddr_in echoClntAddr;
 	unsigned int clntLen;
-	char *Buffer; 
+	char Buffer[RCVBUFSIZE], *b; 
 
 	if ((servSock = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0)
 		printf("Error\n");
@@ -107,9 +107,8 @@ void *TCPcon(void *agv)
 	if (listen(servSock, MAXPENDING) < 0)
 		printf("Error\n");
 	
-	Buffer = malloc(sizeof(int)*RCVBUFSIZE);
-	//strcmp(Buffer, "HELLO");
-	//Buffer[RCVBUFSIZE] = '\0';
+	b = malloc(sizeof(int)*RCVBUFSIZE);
+	strcpy(b, "123");
 	for (;;)
 	{
 		clntLen = sizeof (echoClntAddr);
@@ -117,7 +116,7 @@ void *TCPcon(void *agv)
 			printf("Error\n");
 		printf("Handling client %s\n", inet_ntoa(echoClntAddr.sin_addr));
 
-		if (send(clntSock, , RCVBUFSIZE, 0) < 0)
+		if (send(clntSock, b, sizeof(b), 0) < 0)
             printf("Error\n");
       // if ((recvMsgSize = recv(clntSocket, echoBuffer, RCVBUFSIZE, 0)) < 0)
         //    printf("Error\n");
