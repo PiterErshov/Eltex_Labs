@@ -3,7 +3,7 @@
 int main(int argc, char *argv[])
 {
 
-	if (argc < 4)		/* Test for correct number of parameters */
+	if (argc < 6)		/* Test for correct number of parameters */
 	{
 		fprintf(stderr,
 			"Usage:  %s <IP Address> <Port> <Send String>\n",
@@ -14,6 +14,8 @@ int main(int argc, char *argv[])
 	broadcastIP = argv[1];
 	broadcastPort = atoi(argv[2]);
 	TCPport = argv[3];
+	x = atoi(argv[4]);
+	y = atoi(argv[5]);
 	
 	int result;
 	pthread_t threads[2];

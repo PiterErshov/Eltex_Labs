@@ -50,7 +50,7 @@ void *TCPcon(void *agv)
 	struct sockaddr_in echoServAddr;
 	char *servIP;
 	char *echoString;
-	char echoBuffer[RCVBUFSIZE];
+	
 	unsigned int echoStringLen;
 	int size_mas, totalBytesRcvd;
 
@@ -68,11 +68,12 @@ void *TCPcon(void *agv)
 	
 	if ((size_mas = recv(sock, &x, sizeof(x), 0)) <= 0)
 		printf("Error. TCPcon recv");
-	printf("T1 %d\n", x);
-	if ((size_mas = recv(sock, &x, sizeof(x), 0)) <= 0)
+	//printf("T1 %d\n", x);
+	if ((size_mas = recv(sock, &y, sizeof(y), 0)) <= 0)
 		printf("Error. TCPcon recv");
-	printf("T1 %d\n", x);
-	if ((size_mas = recv(sock,	echoBuffer, RCVBUFSIZE, 0)) <= 0)
+	//printf("T1 %d\n", y);
+	char *echoBuffer = malloc(sizeof(char) * (x * y));
+	if ((recv(sock,	echoBuffer, x * y, 0)) <= 0)
 		printf("Error. TCPcon recv");
 	printf("T1 %s\n", echoBuffer);
 	

@@ -16,10 +16,12 @@
 unsigned short broadcastPort;
 char *broadcastIP;	/* IP broadcast address */
 char *TCPport;	/* String to broadcast */
-int flag;
+int flag, x, y;
 
 void * broadcaster(void *agv);
 
-void * broadcast_s(void *agv);//широковещательная функция поиска клиентов
+void * broadcast_s(void *agv);
 
 void *TCPcon(void *agv);
+
+char * map_creat(int x, int y);
