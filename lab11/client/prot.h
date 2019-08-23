@@ -16,6 +16,7 @@ unsigned short outPort;
 char *sendOut;
 unsigned short broadcastPort;
 char *broadcastIP, *outIP;
+int Mx, My;
 pthread_mutex_t mutex;
 
 void * broadcast_send(void *agv);

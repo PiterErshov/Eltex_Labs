@@ -2,43 +2,38 @@
 
 void *broadcaster(void *agv)
 {
-	int sock;		/* Socket */
-	struct sockaddr_in broadcastAddr;	/* Broadcast address */
+	int sock;
+	struct sockaddr_in broadcastAddr;
 
 
-	int broadcastPermission;	/* Socket opt to set permission to broadcast */
-	unsigned int sendStringLen;	/* Length of string to broadcast */
+	int broadcastPermission;
+	unsigned int sendStringLen;
 
 	flag = 0;
-
-	/* Create socket for sending/receiving datagrams */
 	if ((sock = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP)) < 0)
 		printf("Error");
 
-	/* Set socket to allow broadcast */
 	broadcastPermission = 1;
 	if (setsockopt
 	    (sock, SOL_SOCKET, SO_BROADCAST, (void *) &broadcastPermission,
 	     sizeof (broadcastPermission)) < 0)
 		printf("Error");
 
-	/* Construct local address structure */
-	memset(&broadcastAddr, 0, sizeof (broadcastAddr));	/* Zero out structure */
-	broadcastAddr.sin_family = AF_INET;	/* Internet address family */
-	broadcastAddr.sin_addr.s_addr = inet_addr(broadcastIP);	/* Broadcast IP address */
-	broadcastAddr.sin_port = htons(broadcastPort);	/* Broadcast port */
+	memset(&broadcastAddr, 0, sizeof (broadcastAddr));
+	broadcastAddr.sin_family = AF_INET;	
+	broadcastAddr.sin_addr.s_addr = inet_addr(broadcastIP);	
+	broadcastAddr.sin_port = htons(broadcastPort);
 
-	sendStringLen = strlen(TCPport);	/* Find length of sendString */
-
-	for (int i = 0;; i++)	/* Run forever */
+	sendStringLen = strlen(TCPport);
+	
+	for (;;)
 	{
 		if (flag == 1)
 			break;
-		/* Broadcast sendString in datagram to clients every 3 seconds */
 		if (sendto(sock, TCPport, sendStringLen, 0, (struct sockaddr *) &broadcastAddr, sizeof (broadcastAddr)) != sendStringLen)
 			printf("Error");
 
-		sleep(1);	/* Avoids flooding the network */
+		sleep(1);
 	}
 	close(sock);
 	pthread_exit(NULL);
@@ -92,7 +87,7 @@ void *TCPcon(void *agv)
 	struct sockaddr_in echoServAddr;
 	struct sockaddr_in echoClntAddr;
 	unsigned int clntLen;
-	char Buffer[RCVBUFSIZE], *b; 
+	char *b; 
 
 	if ((servSock = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0)
 		printf("Error\n");
@@ -108,7 +103,9 @@ void *TCPcon(void *agv)
 		printf("Error\n");
 	
 	b = malloc(sizeof(int)*RCVBUFSIZE);
-	strcpy(b, "123");
+	
+	strcpy(b, "34");
+	int x = 2, y = 3;
 	for (;;)
 	{
 		clntLen = sizeof (echoClntAddr);
@@ -116,11 +113,12 @@ void *TCPcon(void *agv)
 			printf("Error\n");
 		printf("Handling client %s\n", inet_ntoa(echoClntAddr.sin_addr));
 
-		if (send(clntSock, b, sizeof(b), 0) < 0)
+		if (send(clntSock, &x, sizeof(int), 0) < 0)
             printf("Error\n");
-      // if ((recvMsgSize = recv(clntSocket, echoBuffer, RCVBUFSIZE, 0)) < 0)
-        //    printf("Error\n");
-		//HandleTCPClient(clntSock);
+        if (send(clntSock, &y, sizeof(int), 0) < 0)
+            printf("Error\n");
+        if (send(clntSock,	b, sizeof(b), 0) < 0)
+            printf("Error\n");          
 	}
 	pthread_exit(NULL);
 }

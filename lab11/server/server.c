@@ -11,9 +11,9 @@ int main(int argc, char *argv[])
 		exit(1);
 	}
 
-	broadcastIP = argv[1];	/* First arg:  broadcast IP address */
-	broadcastPort = atoi(argv[2]);	/* Second arg:  broadcast port */
-	TCPport = argv[3];	/* Third arg:  string to broadcast */
+	broadcastIP = argv[1];
+	broadcastPort = atoi(argv[2]);
+	TCPport = argv[3];
 	
 	int result;
 	pthread_t threads[2];
