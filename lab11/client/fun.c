@@ -70,15 +70,13 @@ void *TCPcon(void *agv)
 
 	if ((size_mas = recv(sock, &x, sizeof (x), 0)) <= 0)
 		printf("Error. TCPcon recv");
-	//printf("T1 %d\n", x);
 	if ((size_mas = recv(sock, &y, sizeof (y), 0)) <= 0)
 		printf("Error. TCPcon recv");
-	//printf("T1 %d\n", y);
-	char *echoBuffer = malloc(sizeof (char) * (60));
+	char *echoBuffer = malloc(sizeof (char) * ( x * y));
 	if ((recv(sock, echoBuffer, x * y, 0)) <= 0)
 		printf("Error. TCPcon recv");
-	//printf("T1 %s\n", echoBuffer);
-
+	
+		
 	char **map = calloc(x, sizeof (char *));
 	int k = 0;
 	for (int i = 0; i < x; i++)
@@ -91,18 +89,6 @@ void *TCPcon(void *agv)
 				k++;
 		}
 	}
-	/*k = 0;
-	   for (int i = 0; i < x; i++)
-	   {            
-	   for (int j = 0; j < y; j++)
-	   {
-	   printf("[%d] = %c ", k,      map[i][j]);
-
-	   k++;
-	   }
-	   printf("\n");
-	   } */
-
 	srand(time(NULL));
 	int Mx = rand() % x;
 	srand(time(NULL));
@@ -115,34 +101,6 @@ void *TCPcon(void *agv)
 	pthread_exit(NULL);
 }
 
-void *broadcast_send(void *agv)
-{
-	pthread_mutex_lock(&mutex);
-	int sock;
-	struct sockaddr_in broadcastAddr;	/* Broadcast address */
-	char *broadcastIP, *sendString;	/* IP broadcast address */
-	unsigned int sendOutLen;
-	if ((sock = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP)) < 0)
-		printf("Error. broadcast_send socket");
-	/* Construct bind structure */
-	memset(&broadcastAddr, 0, sizeof (broadcastAddr));	/* Zero out structure */
-	broadcastAddr.sin_family = AF_INET;	/* Internet address family */
-	broadcastAddr.sin_addr.s_addr = inet_addr(outIP);	/* Any incoming interface */
-	broadcastAddr.sin_port = htons(outPort);	/* Broadcast port */
-
-	sendOut = "1";
-	sendOutLen = strlen(sendOut);
-
-	/* Receive a single datagram from the server */
-	if (sendto
-	    (sock, sendOut, sendOutLen, 0, (struct sockaddr *) &broadcastAddr,
-	     sizeof (broadcastAddr)) != sendOutLen)
-		printf("Error. broadcast_send sendto");
-	//pthread_mutex_unlock(&mutex);
-	close(sock);
-	pthread_exit(NULL);
-}
-
 int search_target(int x, int y, int Mx, int My, char **map)
 {	
 	int targets = 0;
@@ -151,16 +109,12 @@ int search_target(int x, int y, int Mx, int My, char **map)
 		srand(time(NULL));
 		if (rand() % 2 == 0)
 			for(int i = Mx; i < x; i++)
-			{	
 				if(map[i][My] == '1')
 					targets++;
-			}
 		else
 			for(int i = My; i < y; i++)
-			{	
 				if(map[Mx][i] == '1')
 					targets++;
-			}			
 	}
 	if (Mx < x / 2 && My > y / 2)
 	{
@@ -183,32 +137,25 @@ int search_target(int x, int y, int Mx, int My, char **map)
 		srand(time(NULL));
 		if (rand() % 2 == 0)
 		for(int i = Mx; i > 0; i--)
-			{	
 				if(map[i][My] == '1')
 					targets++;
-			}
 		else
 			for(int i = My; i < y; i++)
-			{	
 				if(map[Mx][i] == '1')
 					targets++;
-			}			
 	}
 	if (Mx > x / 2 && My > y / 2)
 	{
+		printf("4");
 		srand(time(NULL));
 		if (rand() % 2 == 0)
 		for(int i = Mx; i > 0; i--)
-			{	
 				if(map[i][My] == '1')
 					targets++;
-			}
 		else
 			for(int i = My; i > 0; i--)
-			{	
 				if(map[Mx][i] == '1')
 					targets++;
-			}		
 	}
 	if (Mx == x / 2 && My == y / 2)
 	{
@@ -216,28 +163,20 @@ int search_target(int x, int y, int Mx, int My, char **map)
 		int w = rand() % 4;
 		if (w == 0)
 		for(int i = Mx; i > 0; i--)
-		{	
 			if(map[i][My] == '1')
-				targets++;
-		}
+					targets++;
 		if (w == 1)
 		for(int i = My; i < y; i++)
-		{	
 			if(map[Mx][i] == '1')
-				targets++;
-		}
+					targets++;
 		if (w == 2)
 		for(int i = Mx; i < x; i++)
-		{	
 			if(map[i][My] == '1')
-				targets++;
-		}
+					targets++;
 		if (w == 3)
 		for(int i = My; i > 0; i--)
-		{	
 			if(map[Mx][i] == '1')
-				targets++;
-		}				
+					targets++;
 	}
 	
 	return targets;
