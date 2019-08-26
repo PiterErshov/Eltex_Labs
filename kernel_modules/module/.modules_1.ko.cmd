@@ -1,0 +1,1 @@
+cmd_/home/user/lab6/Eltex_Labs/kernel_modules/module/modules_1.ko := ld -r -m elf_x86_64  -z max-page-size=0x200000 -T ./scripts/module-common.lds  --build-id  -o /home/user/lab6/Eltex_Labs/kernel_modules/module/modules_1.ko /home/user/lab6/Eltex_Labs/kernel_modules/module/modules_1.o /home/user/lab6/Eltex_Labs/kernel_modules/module/modules_1.mod.o ;  true
