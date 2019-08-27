@@ -80,6 +80,7 @@ void *TCPcon(void *agv)
         if (send(clntSock,	b, x * y, 0) < 0)
             printf("Error4\n");          
 	}
+	free(b);
 	pthread_exit(NULL);
 }
 
@@ -109,4 +110,12 @@ char* map_creat(int x, int y)
 				k++;
 		}
 	return outmap;
+	freeMas(map, y);
+}
+
+void freeMas(char **mas, int y)	//очистка массива
+{
+	for (int i = 0; i < y; i++)
+		free(mas[i]);
+	free(mas);
 }

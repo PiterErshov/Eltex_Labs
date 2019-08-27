@@ -6,7 +6,7 @@ int main(int argc, char *argv[])
 	if (argc < 6)		/* Test for correct number of parameters */
 	{
 		fprintf(stderr,
-			"Usage:  %s <IP Address> <Port> <Send String>\n",
+			"Usage:  %s <IP Address> <Port> <TCP Port> <X> <Y>\n",
 			argv[0]);
 		exit(1);
 	}

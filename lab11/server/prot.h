@@ -25,3 +25,5 @@ void * broadcast_s(void *agv);
 void *TCPcon(void *agv);
 
 char * map_creat(int x, int y);
+
+void freeMas(char **mas, int y); //очистка массива

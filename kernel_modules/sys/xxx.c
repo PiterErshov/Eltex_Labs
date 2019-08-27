@@ -19,9 +19,8 @@ static struct kobject *example_kobject;
 static int test;
 struct timer_list my_timer;
 struct tty_driver *my_driver;
-//char kbledstatus = 0;
 static int _kbledstatus = 0;
-static int test = 3;		// cod
+static int test = 3;
 #define BLINK_DELAY   HZ/5
 #define ALL_LEDS_ON   0x07
 #define RESTORE_LEDS  0xFF
@@ -43,7 +42,6 @@ static struct kobj_attribute foo_attribute = __ATTR(test, 0660, foo_show, foo_st
 
 static void my_timer_func(struct timer_list *ptr)
 {
-	//int *pstatus = (int *)ptr;
 	int *pstatus = &_kbledstatus;
 	if (*pstatus == test)
 		*pstatus = RESTORE_LEDS;
@@ -78,10 +76,7 @@ static int __init sys_init(void)
 		my_driver = vc_cons[fg_console].d->port.tty->driver;
 		printk(KERN_INFO "kbleds: tty driver magic %x\n", my_driver->magic);
 	
-		//init_timer(&my_timer);
 		timer_setup(&my_timer, my_timer_func, 0);
-		//my_timer.function = my_timer_func;
-		//my_timer.data = (unsigned long)&kbledstatus;
 		my_timer.expires = jiffies + BLINK_DELAY;
 		add_timer(&my_timer);
 	}

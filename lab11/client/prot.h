@@ -25,3 +25,5 @@ void * broadcast_send(void *agv);
 void * broadcast_recv(void *agv);//широковещательная функция поиска клиентов
 
 void *TCPcon(void *agv);
+
+void freeMas(char **mas, int y); //очистка массива

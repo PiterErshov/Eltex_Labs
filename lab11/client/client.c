@@ -3,13 +3,13 @@
 
 int main(int argc, char *argv[])
 {
-	if (argc != 3)		/* Test for correct number of arguments */
+	if (argc != 3)
 	{
-		fprintf(stderr, "Usage: %s <Broadcast Port>\n", argv[0]);
+		fprintf(stderr, "Usage: %s <Broadcast Port> <Broadcast IP>\n", argv[0]);
 		exit(1);
 	}
 
-	broadcastPort = atoi(argv[1]);	/* First arg: broadcast port */
+	broadcastPort = atoi(argv[1]);
 	broadcastIP = argv[2];
 
 
@@ -23,11 +23,8 @@ int main(int argc, char *argv[])
 		perror("Creating the first thread");
 		return EXIT_FAILURE;
 	}
-	//for (int i = 0; i < 2; i++)
-	//{
 	result = pthread_join(threads, &status);
 	if (result != 0)
 		return EXIT_FAILURE;
-	//}
 	return 0;
 }
