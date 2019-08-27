@@ -5,7 +5,7 @@ KDIR = /lib/modules/$(CURRENT)/build
 PWD = $(shell pwd)
 DEST = /lib/modules/$(CURRENT)/misc
 
-TARGET = sys_mod
+TARGET = netlink_mod
 obj-m	:= $(TARGET).o
 
 default:
