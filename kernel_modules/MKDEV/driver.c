@@ -1,5 +1,5 @@
 #include <linux/cdev.h> 
-#include "../dev.h" 
+#include "dev.h" 
  
 static int major = 0; 
 module_param( major, int, S_IRUGO ); 
