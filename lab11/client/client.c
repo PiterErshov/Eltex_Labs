@@ -26,5 +26,6 @@ int main(int argc, char *argv[])
 	result = pthread_join(threads, &status);
 	if (result != 0)
 		return EXIT_FAILURE;
+	sleep(2);
 	return 0;
 }

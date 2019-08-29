@@ -4,7 +4,7 @@
 
 int main(int argc, char *argv[])
 {
-	struct msgbuf test;
+	struct msgbuf test;	
 	char **ch;	
 	int msqid = 0, b = 0;
 				
