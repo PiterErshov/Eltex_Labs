@@ -10,7 +10,7 @@ int main(int argc, char *argv[])
 			argv[0]);
 		exit(1);
 	}
-	struct msgbuf test;
+	
 	int msqid = 0;
 	
 	broadcastIP = argv[1];
@@ -18,32 +18,32 @@ int main(int argc, char *argv[])
 	//TCPport = argv[3];
 	strcpy(BM.TCPport_one, argv[3]);
 	strcpy(BM.TCPport_two, argv[4]);
-	struct mess m;
-	
-	msqid = msgget(0, 0600 |IPC_CREAT|IPC_EXCL);
-	
-	
-	
-	//printf("C %d \n", buf.m[0].size);
-	
-	//for(int i = 0; i < 10; i++)
-	//{
-		m.size =1 + 10;
-		buf.m[1] = m;
-		buf.mtype = 1;
-		printf("DD %d\n", msgsnd(msqid, &buf, sizeof (buf.m[1]), 0));
-	//	buf.mtype = 0;
-//	}
-	//for(int i = 0; i < 10; i++)
-	//{
-		msgrcv(msqid, &test, sizeof (struct msgbuf) - sizeof (long), buf.mtype, IPC_NOWAIT);
-		printf("C %d\n", test.m[1].size);
-//	}
-	//printf("BUF.m[0] = %d, BUF.m[1] = %d", buf.m[0].size, buf.m[1].size);
+
 	/*
+	struct mess m;	
+	
+	int y = 0;
+	/*
+	for(int i = 0; i < 10; i++)
+	{
+		y += sizeof (buf.m[i]);
+		m.size = i * 10;
+		buf.m[i] = m;
+		buf.mtype = 1;
+		msgsnd(msqid, &buf, y, 0);
+	}
+	for(int i = 0; i < 10; i++)
+	{
+		msgrcv(msqid, &test, sizeof (struct msgbuf) - sizeof (long), buf.mtype, IPC_NOWAIT);
+		printf("C %d\n", test.m[i].size);
+	}
+	//*/
+	//printf("BUF.m[0] = %d, BUF.m[1] = %d", buf.m[0].size, buf.m[1].size);
+	//*
+	msqid = msgget(0, 0600 |IPC_CREAT|IPC_EXCL);
 	int result;
-	pthread_t threads[2];
-	void *status[2];
+	pthread_t threads[3];
+	void *status[3];
 	result = pthread_create(&threads[0], NULL, broadcaster, NULL);
 	if (result != 0)
 	{
@@ -51,13 +51,19 @@ int main(int argc, char *argv[])
 		return EXIT_FAILURE;
 	}
 	//*
-	result = pthread_create(&threads[1], NULL, TCPcon, NULL);
+	result = pthread_create(&threads[1], NULL, TCPconOne, msqid);
 	if (result != 0)
 	{
 		perror("Creating the first thread");
 		return EXIT_FAILURE;
 	}
-	for (int i = 0; i < 1; i++)
+	result = pthread_create(&threads[2], NULL, TCPconTwo, msqid);
+	if (result != 0)
+	{
+		perror("Creating the first thread");
+		return EXIT_FAILURE;
+	}
+	for (int i = 0; i < 3; i++)
 	{
 		result = pthread_join(threads[i], &status[i]);
 		if (result != 0)

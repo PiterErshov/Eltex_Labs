@@ -21,7 +21,7 @@
 #define N 50
 unsigned short broadcastPort;
 char *broadcastIP;	/* IP broadcast address */
-//char *TCPport;	/* String to broadcast */
+pthread_cond_t cond_flag; 
 int flag;
 
 struct br_mess
@@ -39,8 +39,9 @@ struct mess
 
 struct msgbuf
 {
-	long mtype;
-    //int size;
+	long mtype; 
+    int size;
+    int size_of;
 	struct mess m[N];
 } buf;
 /*
@@ -59,7 +60,9 @@ void * broadcaster(void *agv);
 
 void * broadcast_s(void *agv);
 
-void *TCPcon(void *agv);
+void *TCPconOne(void *agv);
+
+void *TCPconTwo(void *agv);
 
 char * map_creat(int x, int y);
 
