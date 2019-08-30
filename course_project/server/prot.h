@@ -18,17 +18,12 @@
 #define RCVBUFSIZE 32
 #define MESSSIZE 255
 #define PORTMASS 5
+#define BROADPORTS 10
 #define N 50
-unsigned short broadcastPort;
-char *broadcastIP;	/* IP broadcast address */
+unsigned short bPort1, bPort2;
+char *broadcastIP, *TCPport_one, *TCPport_two;	/* IP broadcast address */
 pthread_cond_t cond_flag; 
 int flag;
-
-struct br_mess
-{
-    char TCPport_one[PORTMASS];
-    char TCPport_two[PORTMASS];
-}BM;
 
 struct mess
 {
@@ -36,7 +31,7 @@ struct mess
     int size;
     char message[MESSSIZE];
 };
-
+struct mess m1, m2;
 struct msgbuf
 {
 	long mtype; 
@@ -44,25 +39,20 @@ struct msgbuf
     int size_of;
 	struct mess m[N];
 } buf;
-/*
-void Print(const Q* queue)
-{
-   const COM* node = queue->head;
- 
-   for (; node; node = node->next)
-   {
-      printf("%d ", node->value);
-   }
-   printf("\n");
-}
-*/
-void * broadcaster(void *agv);
+
+void * broadcast_type1(void *agv);
+
+void * broadcast_type2(void *agv);
 
 void * broadcast_s(void *agv);
 
 void *TCPconOne(void *agv);
 
 void *TCPconTwo(void *agv);
+
+void *TCPrecvOne(void *agv);
+
+void *TCPsendTwo(void *agv);
 
 char * map_creat(int x, int y);
 

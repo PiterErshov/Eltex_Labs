@@ -3,11 +3,11 @@
 
 int main(int argc, char *argv[])
 {
-	int result, TTS = 0;
+	int result;
 	pthread_t threads;
 	void *status;
 
-	if (argc != 4)
+	if (argc != 3)
 	{
 		fprintf(stderr, "Usage: %s <Broadcast Port> <Broadcast IP>\n", argv[0]);
 		exit(1);
@@ -15,10 +15,10 @@ int main(int argc, char *argv[])
 
 	broadcastPort = atoi(argv[1]);
 	broadcastIP = argv[2];
-	TTS = atoi(argv[3]);
+	//TTS = atoi(argv[3]);
 	for(;;)
 	{
-		result = pthread_create(&threads, NULL, broadcast_recv, TTS);
+		result = pthread_create(&threads, NULL, broadcast_recv, NULL);
 		if (result != 0)
 		{
 			perror("Creating the first thread");

@@ -14,17 +14,13 @@
 #define RCVBUFSIZE 32
 #define MESSSIZE 255
 #define PORTMASS 5
+
+int TTS;
 unsigned short outPort;	
 char *sendOut;
 unsigned short broadcastPort;
-char *broadcastIP, *outIP;
+char *broadcastIP, *outIP, TCPport[PORTMASS];
 pthread_mutex_t mutex;
-
-struct br_mess
-{
-    char one[PORTMASS];
-    char two[PORTMASS];
-} BM;
 
 struct mess
 {
