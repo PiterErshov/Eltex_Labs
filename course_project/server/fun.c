@@ -4,7 +4,6 @@ void *broadcast_type1(void *agv)
 {
 	int sock;
 	struct sockaddr_in broadcastAddr[BROADPORTS];
-	pthread_mutex_t mutex; 
 	int broadcastPermission;
 	unsigned int sendStringLen;
 
@@ -28,16 +27,12 @@ void *broadcast_type1(void *agv)
 	{	
 		for(int i = 0; i < BROADPORTS; i++)
 		{
-			pthread_mutex_lock(&mutex); 
-			int b = buf.size;
-			pthread_mutex_unlock(&mutex); 
-
-			if(b < N)		
-			{
-				if (sendto(sock, TCPport_one, strlen(TCPport_one), 0, (struct sockaddr *) &broadcastAddr[i], sizeof (broadcastAddr[i])) < 0)
+			if(size_of < N)		
+			{	
+				if (sendto(sock, TCPport_one, strlen(TCPport_one), 0, (struct sockaddr *) &broadcastAddr[i], 
+					sizeof (broadcastAddr[i])) < 0)
 					printf("Error broadcaster sendto1\n");
-			}
-			printf("BUF.size % d\n", buf.size);
+			}						
 		}
 	}
 	close(sock);
@@ -48,7 +43,6 @@ void *broadcast_type2(void *agv)
 {	
 	int sock;
 	struct sockaddr_in broadcastAddr[BROADPORTS];
-	pthread_mutex_t mutex; 
 	int broadcastPermission;
 	unsigned int sendStringLen;
 
@@ -72,16 +66,13 @@ void *broadcast_type2(void *agv)
 	{	
 		for(int i = 0; i < BROADPORTS; i++)
 		{
-			pthread_mutex_lock(&mutex); 
-			int b = buf.size;
-			pthread_mutex_unlock(&mutex); 
-
-			if(b != 0)		
+			if(size_of != 0)		
 			{
-				if (sendto(sock, TCPport_two, strlen(TCPport_two), 0, (struct sockaddr *) &broadcastAddr[i], sizeof (broadcastAddr[i])) < 0)
+				if (sendto(sock, TCPport_two, strlen(TCPport_two), 0, (struct sockaddr *) &broadcastAddr[i],
+					sizeof (broadcastAddr[i])) < 0)
 					printf("Error broadcaster sendto2\n");
 			}
-			sleep(3);
+			sleep(1);
 		}
 	}
 	close(sock);
@@ -100,7 +91,6 @@ void *TCPconOne(void *agv)
 	struct sockaddr_in echoServAddr;
 	struct sockaddr_in echoClntAddr;
 	unsigned int clntLen;
-	pthread_mutex_t mutex; 
 
 	if ((servSock = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0)
 		printf("Error TCPconOne socket\n");
@@ -120,7 +110,8 @@ void *TCPconOne(void *agv)
 		clntLen = sizeof (echoClntAddr);
 		if ((clntSock = accept(servSock, (struct sockaddr *) &echoClntAddr, &clntLen)) < 0)
 			printf("Error TCPconOne accept\n");
-
+		else
+			printf("connect YES1\n");
 		result = pthread_create(&threads, NULL, TCPrecvOne, &clntSock);
 		if (result != 0)
 			perror("Creating the first thread");
@@ -128,14 +119,11 @@ void *TCPconOne(void *agv)
 		result = pthread_join(threads, &status);
 		if (result != 0)
 			perror("Join the first thread");
-		printf("STR %d, %d, %s\n", m1.time, m1.size, m1.message);
-		fflush(stdout);
+
 		pthread_mutex_lock(&mutex);   		
-		buf.size++;
-		buf.m[buf.size - 1] = m1;
-		buf.size_of += sizeof(buf.m[buf.size - 1]);
+		
 		buf.mtype = 1;
-		msgsnd(msqid, &buf, buf.size_of, 0);
+		msgsnd(msqid, &buf, sizeof(buf.message), 0);
 		pthread_mutex_unlock(&mutex); 
 		
 	}
@@ -145,8 +133,10 @@ void *TCPconOne(void *agv)
 void *TCPrecvOne(void *agv)
 {
 	int clntSock = *(int*)agv;
-	if ((recv(clntSock, &m1, sizeof(m1), 0)) <= 0)
+	if ((recv(clntSock, &buf, sizeof(buf), 0)) <= 0)
 			printf("Error TCPconOne recv\n");
+	else 
+		size_of+= 1;
 	pthread_exit(NULL);
 }
 
@@ -163,7 +153,6 @@ void *TCPconTwo(void *agv)
 	struct sockaddr_in echoServAddr;
 	struct sockaddr_in echoClntAddr;
 	unsigned int clntLen;
-	pthread_mutex_t mutex;
 
 	if ((servSock = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0)
 		printf("Error TCPconTwo socket\n");
@@ -179,19 +168,13 @@ void *TCPconTwo(void *agv)
 		printf("Error TCPconTwo listen\n");
 
 	for (;;)
-	{
-		pthread_mutex_lock(&mutex); 
-  		int b = buf.size;
-  		pthread_mutex_unlock(&mutex); 
-		if(b != 0)		
+	{ 
+		if(size_of != 0)		
 		{
 			clntLen = sizeof (echoClntAddr);
 			if ((clntSock = accept(servSock, (struct sockaddr *) &echoClntAddr, &clntLen)) < 0)
 				printf("Error TCPconTwo accept\n");
-			
 			msgrcv(msqid, &out, sizeof (struct msgbuf) - sizeof (long), buf.mtype, IPC_NOWAIT);
-			m2 = out.m[b - 1];
-
 			result = pthread_create(&threads, NULL, TCPsendTwo, &clntSock);
 			if (result != 0)
 				perror("Creating the first thread");
@@ -206,16 +189,12 @@ void *TCPconTwo(void *agv)
 
 void *TCPsendTwo(void *agv)	
 {
-	fflush(stdout);
+	pthread_mutex_lock(&mutex); 
 	int clntSock = *(int*)agv;
-	if (send(clntSock,	&m2, sizeof(m2), 0) < 0)
+	if (send(clntSock,	&buf, sizeof(buf), 0) < 0)
 		printf("Error TCPconTwo send\n");
+	else 
+		size_of -= 1;
+	pthread_mutex_unlock(&mutex); 
 	pthread_exit(NULL);
-}
-
-void freeMas(char **mas, int y)	//очистка массива
-{
-	for (int i = 0; i < y; i++)
-		free(mas[i]);
-	free(mas);
 }

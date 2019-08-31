@@ -70,8 +70,6 @@ void *TCPcon(void *agv)
 	TTS = m.time;
 
 	printf("MMM %s\n", m.message);
-	//if (send(sock,	&m, sizeof(m), 0) < 0)
-      //  printf("Error4\n");
 	fflush(stdout);
 	close(sock);
 	pthread_exit(NULL);

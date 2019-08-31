@@ -26,26 +26,26 @@ int main(int argc, char *argv[])
 	struct mess m;	
 	struct msgbuf out;
 	int y = 0;
+
+	
 	/*
 	for(int i = 0; i < 10; i++)
 	{
-		y += sizeof (buf.m[i]);
 		m.size = i * 10;
-		buf.m[i] = m;
+		buf.size = m.size;
 		buf.mtype = 1;
-		msgsnd(msqid, &buf, y, 0);
+		msgsnd(msqid, &buf, sizeof(buf.message), 0);
 	}
 	for(int i = 0; i < 10; i++)
 	{
 		msgrcv(msqid, &out, sizeof (struct msgbuf) - sizeof (long), buf.mtype, IPC_NOWAIT);
-		printf("C %d\n", out.m[i].size);
+		printf("C %d\n", out.size);
 	}
 	//*/
 	//printf("BUF.m[0] = %d, BUF.m[1] = %d", buf.m[0].size, buf.m[1].size);
 	//*
-
 	msqid = msgget(0, 0600 |IPC_CREAT|IPC_EXCL);
-	buf.size = 0;
+	size_of = 0;
 	result = pthread_create(&threads[0], NULL, broadcast_type1, NULL);
 	if (result != 0)
 	{
@@ -71,7 +71,7 @@ int main(int argc, char *argv[])
 		perror("Creating the first thread");
 		return EXIT_FAILURE;
 	}
-	for (int i = 0; i < 4; i++)
+	for (int i = 0; i < 3; i++)
 	{
 		result = pthread_join(threads[i], &status[i]);
 		if (result != 0)

@@ -19,25 +19,18 @@
 #define MESSSIZE 255
 #define PORTMASS 5
 #define BROADPORTS 10
-#define N 50
+#define N 10
 unsigned short bPort1, bPort2;
-char *broadcastIP, *TCPport_one, *TCPport_two;	/* IP broadcast address */
-pthread_cond_t cond_flag; 
-int flag;
+char *broadcastIP, *TCPport_one, *TCPport_two;
+pthread_mutex_t mutex;
+int size_of;
 
-struct mess
-{
-    int time;
-    int size;
-    char message[MESSSIZE];
-};
-struct mess m1, m2;
 struct msgbuf
 {
 	long mtype; 
+    int time;
     int size;
-    int size_of;
-	struct mess m[N];
+    char message[MESSSIZE];
 } buf;
 
 void * broadcast_type1(void *agv);
@@ -53,7 +46,3 @@ void *TCPconTwo(void *agv);
 void *TCPrecvOne(void *agv);
 
 void *TCPsendTwo(void *agv);
-
-char * map_creat(int x, int y);
-
-void freeMas(char **mas, int y); //очистка массива

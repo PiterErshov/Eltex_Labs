@@ -44,7 +44,6 @@ void *broadcast_recv(void *agv)
 
 void *TCPcon(void *agv)
 {
-	printf("connect YES1\n");
 	int sock;
 	int TTS = *(int*)agv;
 	struct mess m;
@@ -69,8 +68,6 @@ void *TCPcon(void *agv)
 	//	printf("Error. TCPcon recv");
 	if (send(sock,	&m, sizeof(m), 0) < 0)
         printf("Error4\n");
-	else
-		printf("connect YES2\n");
 	close(sock);
 	pthread_exit(NULL);
 }
