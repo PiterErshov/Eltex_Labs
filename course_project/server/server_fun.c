@@ -109,7 +109,7 @@ void *TCPconOne(void *agv)
 		if ((clntSock = accept(servSock, (struct sockaddr *) &echoClntAddr, &clntLen)) < 0)
 			printf("Error TCPconOne accept\n");
 		else
-			printf("connect YES1\n");
+			printf("first type client connected\n");
 		result = pthread_create(&threads, NULL, TCPrecvOne, &clntSock);
 		if (result != 0)
 			perror("Creating the first thread");
@@ -135,7 +135,6 @@ void *TCPrecvOne(void *agv)
 			printf("Error TCPconOne recv\n");
 	else 
 		size_of+= 1;
-	printf("WTF %s", buf.message);
 	pthread_exit(NULL);
 }
 
@@ -173,6 +172,8 @@ void *TCPconTwo(void *agv)
 			clntLen = sizeof (echoClntAddr);
 			if ((clntSock = accept(servSock, (struct sockaddr *) &echoClntAddr, &clntLen)) < 0)
 				printf("Error TCPconTwo accept\n");
+			else
+				printf("second type client connected\n");
 			msgrcv(msqid, &out, sizeof (struct msgbuf) - sizeof (long), mtype, IPC_NOWAIT);
 			result = pthread_create(&threads, NULL, TCPsendTwo, &clntSock);
 			if (result != 0)
