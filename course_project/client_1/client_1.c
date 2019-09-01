@@ -1,5 +1,4 @@
-#include "prot.h"
-
+#include "client_1_prot.h"
 
 int main(int argc, char *argv[])
 {
@@ -9,14 +8,14 @@ int main(int argc, char *argv[])
 
 	if (argc != 5)
 	{
-		fprintf(stderr, "Usage: %s <Broadcast Port> <Broadcast IP>\n", argv[0]);
+		fprintf(stderr, "Usage: %s <Broadcast Port> <Broadcast IP> <Tame to sleep>\n", argv[0]);
 		exit(1);
 	}
 
-	broadcastPort = atoi(argv[1]);
-	broadcastIP = argv[2];
+	Port = atoi(argv[1]);
+	IP = argv[2];
 	TTS = atoi(argv[3]);
-	request = argv[4];
+	message = argv[4];
 	for(;;)
 	{
 		result = pthread_create(&threads, NULL, broadcast_recv, &TTS);

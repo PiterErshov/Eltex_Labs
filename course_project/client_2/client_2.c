@@ -1,4 +1,4 @@
-#include "prot.h"
+#include "client_2_prot.h"
 
 
 int main(int argc, char *argv[])
@@ -13,9 +13,8 @@ int main(int argc, char *argv[])
 		exit(1);
 	}
 
-	broadcastPort = atoi(argv[1]);
-	broadcastIP = argv[2];
-	//TTS = atoi(argv[3]);
+	Port = atoi(argv[1]);
+	IP = argv[2];
 	for(;;)
 	{
 		result = pthread_create(&threads, NULL, broadcast_recv, NULL);

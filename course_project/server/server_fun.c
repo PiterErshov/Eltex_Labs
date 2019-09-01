@@ -1,4 +1,4 @@
-#include "prot.h"
+#include "server_prot.h"
 
 void *broadcast_type1(void *agv)
 {
@@ -7,7 +7,6 @@ void *broadcast_type1(void *agv)
 	int broadcastPermission;
 	unsigned int sendStringLen;
 
-	flag = 0;
 	if ((sock = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP)) < 0)
 		printf("Error broadcaster socket\n");
 
@@ -46,7 +45,6 @@ void *broadcast_type2(void *agv)
 	int broadcastPermission;
 	unsigned int sendStringLen;
 
-	flag = 0;
 	if ((sock = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP)) < 0)
 		printf("Error broadcaster socket\n");
 
@@ -102,7 +100,7 @@ void *TCPconOne(void *agv)
  
 	if (bind(servSock, (struct sockaddr *) &echoServAddr, sizeof (echoServAddr)) < 0)
 		printf("Error TCPconOne bind\n");
-	if (listen(servSock, MAXPENDING) < 0)
+	if (listen(servSock, BROADPORTS) < 0)
 		printf("Error TCPconOne listen\n");
 			
 	for (;;)
@@ -122,7 +120,7 @@ void *TCPconOne(void *agv)
 
 		pthread_mutex_lock(&mutex);   		
 		
-		buf.mtype = 1;
+		mtype = 1;
 		msgsnd(msqid, &buf, sizeof(buf.message), 0);
 		pthread_mutex_unlock(&mutex); 
 		
@@ -137,6 +135,7 @@ void *TCPrecvOne(void *agv)
 			printf("Error TCPconOne recv\n");
 	else 
 		size_of+= 1;
+	printf("WTF %s", buf.message);
 	pthread_exit(NULL);
 }
 
@@ -164,7 +163,7 @@ void *TCPconTwo(void *agv)
 
 	if (bind(servSock, (struct sockaddr *) &echoServAddr, sizeof (echoServAddr)) < 0)
 		printf("Error TCPconTwo bind\n");
-	if (listen(servSock, MAXPENDING) < 0)
+	if (listen(servSock, BROADPORTS) < 0)
 		printf("Error TCPconTwo listen\n");
 
 	for (;;)
@@ -174,7 +173,7 @@ void *TCPconTwo(void *agv)
 			clntLen = sizeof (echoClntAddr);
 			if ((clntSock = accept(servSock, (struct sockaddr *) &echoClntAddr, &clntLen)) < 0)
 				printf("Error TCPconTwo accept\n");
-			msgrcv(msqid, &out, sizeof (struct msgbuf) - sizeof (long), buf.mtype, IPC_NOWAIT);
+			msgrcv(msqid, &out, sizeof (struct msgbuf) - sizeof (long), mtype, IPC_NOWAIT);
 			result = pthread_create(&threads, NULL, TCPsendTwo, &clntSock);
 			if (result != 0)
 				perror("Creating the first thread");
